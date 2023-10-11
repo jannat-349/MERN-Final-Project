@@ -6,7 +6,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../../public/uploads/"));
+    cb(null, path.join(__dirname, "../../employee-management/public/uploads"));
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -73,7 +73,7 @@ router.get("/employees", async (req, res) => {
 router.get("/employee/:id", async (req, res) => {
   const id = req.params.id;
   try {
-    const employee = await Employee.findOne({_id: id});
+    const employee = await Employee.findOne({ _id: id });
     if (employee) {
       res.status(200).json(employee);
     } else {
