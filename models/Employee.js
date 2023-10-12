@@ -14,6 +14,9 @@ const employeeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    name: {
+      type: String,
+    },
     age: {
       type: Number,
       required: true,
@@ -68,7 +71,12 @@ const employeeSchema = new mongoose.Schema(
         },
       },
     ],
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
+  
   { timestamps: true }
 );
 

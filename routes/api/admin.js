@@ -35,6 +35,7 @@ router.post("/employee/create", upload.single("image"), async (req, res) => {
       id: body.id,
       firstName: body.firstName,
       lastName: body.lastName,
+      name: body.firstName + " " + body.lastName,
       age: body.age,
       position: body.position,
       email: body.email,
@@ -63,7 +64,9 @@ router.post("/employee/create", upload.single("image"), async (req, res) => {
 
 router.get("/employees", async (req, res) => {
   try {
-    const employees = await Employee.find({});
+    const employees = (await Employee.find({})).filter(
+      (employee) => employee.isDeleted === false
+    );
     res.status(200).json(employees);
   } catch (error) {
     res.status(500).send(`Something Went wrong`);
@@ -107,16 +110,16 @@ router.put("/employee/update/:id", async (req, res) => {
   }
 });
 
-router.delete("/employee/delete/:id", async (req, res) => {
+router.put("/employee/delete/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const employee = await Employee.findByIdAndDelete(id);
-    if (!employee) {
-      // employee.isDeleted = true;
-      // await employee.save();
+    const employee = await Employee.findById(id);
+    if (!employee.isDeleted) {
+      employee.isDeleted = true;
+      await employee.save();
       res.status(200).json(employee);
     } else {
-      res.status(404).json({ message: `employee not found` });
+      res.status(404).json({ message: `Employee not found` });
     }
   } catch (error) {
     res.status(500).send(`Something Went wrong ${error}`);

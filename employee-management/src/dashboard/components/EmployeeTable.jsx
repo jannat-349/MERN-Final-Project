@@ -3,8 +3,6 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import Title from "./Title";
 import { useEffect, useState } from "react";
-import { DELETE_EMPLOYEE_API_URL, GET_All_EMPLOYEES_API_URL } from "../api/api";
-import { fetchDataFromAPI } from "../utils/fetchDataFromAPI";
 import { Delete, Edit } from "@mui/icons-material";
 
 import {
@@ -15,24 +13,12 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import axios from "axios";
+import { useContext } from "react";
+import DashboardContext from "../context/DashboardContext";
 
-
-export default function EmployeeTable() {
-  const [employees, setEmployees] = useState([]);
+export default function EmployeeTable({ onDelete }) {
   const [openDialogs, setOpenDialogs] = useState({});
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchDataFromAPI(GET_All_EMPLOYEES_API_URL);
-        setEmployees(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
-  }, []);
+  const { employees } = useContext(DashboardContext);
 
   const handleClickOpen = (employeeId) => {
     setOpenDialogs((prevState) => ({
@@ -54,12 +40,9 @@ export default function EmployeeTable() {
 
   const columns = [
     {
-      field: "fullName",
+      field: "name",
       headerName: "Name",
       width: 300,
-
-      valueGetter: (params) =>
-        `${params.row.firstName || ""} ${params.row.lastName || ""}`,
     },
     {
       field: "image",
@@ -158,17 +141,8 @@ export default function EmployeeTable() {
     // For example, open a modal with a form for editing the employee data
   };
 
-  const handleDelete = async (employeeId) => {
-    try {
-      await axios.delete(DELETE_EMPLOYEE_API_URL + employeeId);
-      const updatedEmployees = employees.filter(
-        (employee) => employee._id !== employeeId
-      );
-      setEmployees(updatedEmployees);
-      naviga
-    } catch (error) {
-      console.log(error);
-    }
+  const handleDelete = (employeeId) => {
+    onDelete(employeeId);
   };
 
   useEffect(() => {}, [employees]);
