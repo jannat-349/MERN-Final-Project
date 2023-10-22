@@ -58,25 +58,26 @@ const employeeSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    education: [
-      {
-        degree: {
-          type: String,
-        },
-        university: {
-          type: String,
-        },
-        graduationYear: {
-          type: Number,
-        },
-      },
-    ],
+
+    // education: [
+    //   {
+    //     degree: {
+    //       type: String,
+    //     },
+    //     university: {
+    //       type: String,
+    //     },
+    //     graduationYear: {
+    //       type: Number,
+    //     },
+    //   },
+    // ],
     isDeleted: {
       type: Boolean,
       default: false,
     },
   },
-  
+
   { timestamps: true }
 );
 

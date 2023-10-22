@@ -15,50 +15,55 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get("/", (req, res) => {
-  try {
-    res.status(200).json({ message: "This is the admin page" });
-  } catch (error) {
-    res.status(500).send(`something went wrong ${error}`);
-  }
-});
-
 router.post("/employee/create", upload.single("image"), async (req, res) => {
   try {
-    const body = req.body;
-    if (!req.file) {
-      return res.status(400).send("Image is required.");
-    }
-    const education = JSON.parse(req.body.education);
-    const filename = path.basename(req.file.path);
+    const {
+      id,
+      firstName,
+      lastName,
+      age,
+      position,
+      email,
+      phone,
+      address,
+      joiningDate,
+      salary,
+      department,
+      skills,
+      // education,
+    } = req.body;
+    const image = path.basename(req.file.path);
+    // education = JSON.parse(education);
+    // console.log(education);
     const employeeObj = new Employee({
-      id: body.id,
-      firstName: body.firstName,
-      lastName: body.lastName,
-      name: body.firstName + " " + body.lastName,
-      age: body.age,
-      position: body.position,
-      email: body.email,
-      phone: body.phone,
-      address: body.address,
-      image: filename,
-      department: body.department,
-      joiningDate: body.joiningDate,
-      salary: body.salary,
-      skills: body.skills,
-      education: education,
+      id,
+      firstName,
+      lastName,
+      name: firstName + " " + lastName,
+      age,
+      position,
+      email,
+      phone,
+      address,
+      image,
+      department,
+      joiningDate,
+      salary,
+      skills,
+      // education,
     });
+    console.log(employeeObj);
 
     await employeeObj
       .save()
       .then((savedEmployee) => {
         res.status(201).json(savedEmployee);
       })
-      .catch((error) => {
-        res.status(404).send(`Employee not created... ${error}`);
+      .catch(() => {
+        res.status(400).send("Employee not created. Please try again later.");
       });
   } catch (error) {
-    res.status(500).send(`Something Went wrong ${error}`);
+    console.error(error);
   }
 });
 
@@ -87,15 +92,13 @@ router.get("/employee/:id", async (req, res) => {
   }
 });
 
-router.put("/employee/update/:id", async (req, res) => {
+router.put("/employee/update/:id", upload.single("image"), async (req, res) => {
   try {
     const id = req.params.id;
     const body = req.body;
+    body.name = body.firstName + " " + body.lastName;
     if (req.file) {
       body.image = path.basename(req.file.path);
-    }
-    if (body.education) {
-      body.education = JSON.parse(body.education);
     }
     const employee = await Employee.findByIdAndUpdate(id, body, {
       new: true,

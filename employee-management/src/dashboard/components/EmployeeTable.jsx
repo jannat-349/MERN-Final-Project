@@ -13,12 +13,16 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import DashboardContext from "../context/DashboardContext";
 
 export default function EmployeeTable({ onDelete }) {
   const [openDialogs, setOpenDialogs] = useState({});
+  const [openDialogs2, setOpenDialogs2] = useState({});
+  const [selectedEmployee, setSelectedEmployee] = useState(null); // Track the selected employee
   const { employees } = useContext(DashboardContext);
+  const navigate = useNavigate();
 
   const handleClickOpen = (employeeId) => {
     setOpenDialogs((prevState) => ({
@@ -136,16 +140,34 @@ export default function EmployeeTable({ onDelete }) {
   ];
 
   const handleEdit = (employeeId) => {
-    // Implement your edit functionality here
-    // You can use the employeeId to identify which employee to edit
-    // For example, open a modal with a form for editing the employee data
+    navigate(`/admin/employee/update/${employeeId}`);
   };
 
   const handleDelete = (employeeId) => {
     onDelete(employeeId);
   };
 
-  useEffect(() => {}, [employees]);
+  const handleRowClick = (employeeId) => {
+    // Find the selected employee based on the employeeId
+    const employee = employees.find((emp) => emp._id === employeeId);
+    if (employee) {
+      setSelectedEmployee(employee);
+      setOpenDialogs2((prevState) => ({
+        ...prevState,
+        [employeeId]: true,
+      }));
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedEmployee(null);
+    if (selectedEmployee) {
+      setOpenDialogs2((prevState) => ({
+        ...prevState,
+        [selectedEmployee._id]: false,
+      }));
+    }
+  };
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
@@ -155,7 +177,83 @@ export default function EmployeeTable({ onDelete }) {
         columns={columns}
         pageSize={5}
         disableRowSelectionOnClick
+        onRowClick={(params) => handleRowClick(params.row._id)}
       />
+      <Dialog
+        open={openDialogs2[selectedEmployee?._id] || false}
+        onClose={handleCloseDialog}
+        aria-labelledby="employee-info-dialog-title"
+      >
+        <DialogTitle id="employee-info-dialog-title">
+          Employee Information
+        </DialogTitle>
+        <Dialog
+          open={openDialogs2[selectedEmployee?._id] || false}
+          onClose={handleCloseDialog}
+          aria-labelledby="employee-info-dialog-title"
+        >
+          <DialogTitle id="employee-info-dialog-title">
+            Employee Information
+          </DialogTitle>
+          <DialogContent>
+            {selectedEmployee && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  width: "500px",
+                  height: "500px",
+                }}
+              >
+                <div
+                  style={{ flex: 1, display: "flex", justifyContent: "center" }}
+                >
+                  <img
+                    src={getImageUrl(selectedEmployee.image)}
+                    alt={selectedEmployee.name}
+                    style={{
+                      width: "250px",
+                      height: "250px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </div>
+
+                <div style={{ flex: 1, textAlign: "left" }}>
+                  <p>ID: {selectedEmployee.id}</p>
+                  <p>Name: {selectedEmployee.name}</p>
+                  <p>Age: {selectedEmployee.age}</p>
+                  <p>Position: {selectedEmployee.position}</p>
+                  <p>Email: {selectedEmployee.email}</p>
+                  <p>Phone: {selectedEmployee.phone}</p>
+                  <p>Address: {selectedEmployee.address}</p>
+                  <p>Joining Date: {selectedEmployee.joiningDate}</p>
+                  <p>Department: {selectedEmployee.department}</p>
+                  <p>
+                    Skills:
+                    <ol>
+                      {selectedEmployee.skills.map((skill, index) => (
+                        <li key={index}>{skill}</li>
+                      ))}
+                    </ol>
+                  </p>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

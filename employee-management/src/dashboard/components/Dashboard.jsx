@@ -19,7 +19,6 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { mainListItems, secondaryListItems } from "./ListItems";
 import Chart from "./Chart";
-import Deposits from "./Deposits";
 import { SearchEmployee } from "./SearchEmployee";
 import EmployeeTable from "./EmployeeTable";
 import { useState } from "react";
@@ -28,6 +27,7 @@ import DashboardContext from "../context/DashboardContext";
 import { fetchDataFromAPI } from "../utils/fetchDataFromAPI";
 import { DELETE_EMPLOYEE_API_URL, GET_All_EMPLOYEES_API_URL } from "../api/api";
 import axios from "axios";
+import TotalEmployees from "./TotalEmployees";
 
 function Copyright(props) {
   return (
@@ -98,23 +98,36 @@ const defaultTheme = createTheme();
 
 export default function Dashboard() {
   const [employees, setEmployees] = useState([]);
+  const [ageSum, setAgeSum] = useState(0);
   const [searchList, setSearchList] = useState([]);
+  const [positionCounts, setPositionCounts] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const fetchData = async () => {
+    try {
+      const data = await fetchDataFromAPI(GET_All_EMPLOYEES_API_URL);
+      const totalAge = data.reduce((sum, employee) => sum + employee.age, 0);
+      const counts = {};
+      data.forEach((employee) => {
+        const position = employee.position;
+        counts[position] = (counts[position] || 0) + 1;
+      });
+      setPositionCounts(counts);
+      setAgeSum(totalAge);
+      setEmployees(data);
+      setSearchList(data);
+      setIsLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchDataFromAPI(GET_All_EMPLOYEES_API_URL);
-        setEmployees(data);
-        setSearchList(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
+    fetchData(); // Fetch data when the component mounts
   }, []);
 
   const handleSearch = (option) => {
@@ -126,20 +139,28 @@ export default function Dashboard() {
 
   const handleDeleteEmployee = async (employeeId) => {
     try {
-      await axios.put(DELETE_EMPLOYEE_API_URL + employeeId, { isDeleted: true });
+      await axios.put(DELETE_EMPLOYEE_API_URL + employeeId, {
+        isDeleted: true,
+      });
       const updatedEmployees = employees.filter(
         (employee) => employee._id !== employeeId
       );
+      const totalAge = updatedEmployees.reduce(
+        (sum, employee) => sum + employee.age,
+        0
+      );
+      setAgeSum(totalAge);
       setEmployees(updatedEmployees);
       setSearchList(updatedEmployees);
-
     } catch (error) {
       console.log(error);
     }
   };
 
-  return (
-    <DashboardContext.Provider value={{ employees, setEmployees }}>
+  return isLoading ? (
+    <h1>Loading....</h1>
+  ) : (
+    <DashboardContext.Provider value={{ employees, setEmployees, ageSum }}>
       <ThemeProvider theme={defaultTheme}>
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -214,8 +235,10 @@ export default function Dashboard() {
               <Grid container spacing={3}>
                 {/* Search Employee */}
                 <Grid item xs={12} md={8} lg={9}>
-                  <SearchEmployee searchList={searchList}
-                    onSearch={handleSearch}/>
+                  <SearchEmployee
+                    searchList={searchList}
+                    onSearch={handleSearch}
+                  />
                 </Grid>
                 {/* Chart */}
                 <Grid item xs={12} md={8} lg={9}>
@@ -240,7 +263,7 @@ export default function Dashboard() {
                       height: 240,
                     }}
                   >
-                    <Deposits />
+                    <TotalEmployees />
                   </Paper>
                 </Grid>
                 {/* Employee Table*/}
@@ -253,7 +276,7 @@ export default function Dashboard() {
                       height: 500,
                     }}
                   >
-                    <EmployeeTable onDelete={handleDeleteEmployee}/>
+                    <EmployeeTable onDelete={handleDeleteEmployee} />
                   </Paper>
                 </Grid>
               </Grid>
