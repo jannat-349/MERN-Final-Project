@@ -20,7 +20,7 @@ import DashboardContext from "../context/DashboardContext";
 export default function EmployeeTable({ onDelete }) {
   const [openDialogs, setOpenDialogs] = useState({});
   const [openDialogs2, setOpenDialogs2] = useState({});
-  const [selectedEmployee, setSelectedEmployee] = useState(null); // Track the selected employee
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const { employees } = useContext(DashboardContext);
   const navigate = useNavigate();
 
@@ -29,6 +29,10 @@ export default function EmployeeTable({ onDelete }) {
       ...prevState,
       [employeeId]: true,
     }));
+    setOpenDialogs2((prevState) => ({
+      ...prevState,
+      [employeeId]: false,
+    }));
   };
 
   const handleClose = (employeeId) => {
@@ -36,10 +40,14 @@ export default function EmployeeTable({ onDelete }) {
       ...prevState,
       [employeeId]: false,
     }));
+    setOpenDialogs2((prevState) => ({
+      ...prevState,
+      [employeeId]: false,
+    }));
   };
 
   const getImageUrl = (filename) => {
-    return `uploads/${filename}`; // Adjust the URL as needed
+    return `uploads/${filename}`;
   };
 
   const columns = [
@@ -148,7 +156,6 @@ export default function EmployeeTable({ onDelete }) {
   };
 
   const handleRowClick = (employeeId) => {
-    // Find the selected employee based on the employeeId
     const employee = employees.find((emp) => emp._id === employeeId);
     if (employee) {
       setSelectedEmployee(employee);
@@ -187,67 +194,61 @@ export default function EmployeeTable({ onDelete }) {
         <DialogTitle id="employee-info-dialog-title">
           Employee Information
         </DialogTitle>
-        <Dialog
-          open={openDialogs2[selectedEmployee?._id] || false}
-          onClose={handleCloseDialog}
-          aria-labelledby="employee-info-dialog-title"
-        >
-          <DialogTitle id="employee-info-dialog-title">
-            Employee Information
-          </DialogTitle>
-          <DialogContent>
-            {selectedEmployee && (
+        <DialogContent>
+          {selectedEmployee && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                width: "500px",
+                height: "500px",
+              }}
+            >
               <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexDirection: "column",
-                  width: "500px",
-                  height: "500px",
-                }}
+                style={{ flex: 1, display: "flex", justifyContent: "center" }}
               >
-                <div
-                  style={{ flex: 1, display: "flex", justifyContent: "center" }}
-                >
-                  <img
-                    src={getImageUrl(selectedEmployee.image)}
-                    alt={selectedEmployee.name}
-                    style={{
-                      width: "250px",
-                      height: "250px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                </div>
-
-                <div style={{ flex: 1, textAlign: "left" }}>
-                  <p>ID: {selectedEmployee.id}</p>
-                  <p>Name: {selectedEmployee.name}</p>
-                  <p>Age: {selectedEmployee.age}</p>
-                  <p>Position: {selectedEmployee.position}</p>
-                  <p>Email: {selectedEmployee.email}</p>
-                  <p>Phone: {selectedEmployee.phone}</p>
-                  <p>Address: {selectedEmployee.address}</p>
-                  <p>Joining Date: {selectedEmployee.joiningDate}</p>
-                  <p>Department: {selectedEmployee.department}</p>
-                  <p>
-                    Skills:
-                    <ol>
-                      {selectedEmployee.skills.map((skill, index) => (
-                        <li key={index}>{skill}</li>
-                      ))}
-                    </ol>
-                  </p>
-                </div>
+                <img
+                  src={getImageUrl(selectedEmployee.image)}
+                  alt={selectedEmployee.name}
+                  style={{
+                    width: "250px",
+                    height: "250px",
+                    borderRadius: "50%",
+                  }}
+                />
               </div>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
+
+              <div style={{ flex: 1, textAlign: "left" }}>
+                <p>ID: {selectedEmployee.id}</p>
+                <p>Name: {selectedEmployee.name}</p>
+                <p>Age: {selectedEmployee.age}</p>
+                <p>Position: {selectedEmployee.position}</p>
+                <p>Email: {selectedEmployee.email}</p>
+                <p>Phone: {selectedEmployee.phone}</p>
+                <p>Address: {selectedEmployee.address}</p>
+                <p>
+                  Joining Date:{" "}
+                  {selectedEmployee.joiningDate
+                    ? new Date(
+                        selectedEmployee.joiningDate
+                      ).toLocaleDateString()
+                    : ""}
+                </p>
+
+                <p>Department: {selectedEmployee.department}</p>
+                <p>
+                  Skills:
+                  <ol>
+                    {selectedEmployee.skills.map((skill, index) => (
+                      <li key={index}>{skill}</li>
+                    ))}
+                  </ol>
+                </p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Close
