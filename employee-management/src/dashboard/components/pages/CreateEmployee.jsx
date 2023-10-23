@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -16,12 +16,17 @@ import {
 } from "@mui/material";
 import { ArrowDropDown, HowToReg } from "@mui/icons-material";
 import axios from "axios";
-import { CREATE_EMPLOYEE_API_URL } from "../../api/api";
+import {
+  CREATE_EMPLOYEE_API_URL,
+  GET_All_DEPARTMENTS_API_URL,
+} from "../../api/api";
 import { paperStyle } from "../../common/styles/paperStyle";
 import Title from "../extras/Title";
 import { fieldStyle } from "../../common/styles/fieldStyle";
 import { avatarStyle } from "../../common/styles/avatarStyle";
 import { inputStyle } from "../../common/styles/inputStyle";
+import { useEffect } from "react";
+import { fetchDataFromAPI } from "../../utils/fetchDataFromAPI";
 
 export default function CreateEmployee() {
   const navigate = useNavigate();
@@ -34,31 +39,25 @@ export default function CreateEmployee() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [department, setDepartment] = useState("Choose a department");
+  const [department, setDepartment] = useState("");
   const [joiningDate, setJoiningDate] = useState(new Date());
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
   const [image, setImage] = useState(null);
-//   const [educations, setEducations] = useState([]); // Updated to use educations state
-//   const [degree, setDegree] = useState("");
-//   const [university, setUniversity] = useState("");
-//   const [graduationYear, setGraduationYear] = useState(0);
-  const [departments, setDepartments] = useState([
-    "Choose a department",
-    "Department A",
-    "Department B",
-    "Analytics",
-    "Department C",
-  ]);
+  
+  const [departmentList, setDepartmentList] = useState([]);
+  const fetchData = async () => {
+    try {
+      const data = await fetchDataFromAPI(GET_All_DEPARTMENTS_API_URL);
+      setDepartmentList(data.map((dept) => dept.name));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-//   const handleEducationChange = (e) => {
-//     const { name, value } = e.target;
-//     setEducations({
-//       ...educations,
-//       [name]: value,
-//     });
-//   };
-
+  useEffect(() => {
+    fetchData();
+  }, []);
   async function submit(e) {
     if (department === "Choose a department") {
       alert("Please select a department!");
@@ -80,19 +79,6 @@ export default function CreateEmployee() {
       skills.forEach((skill) => {
         formData.append("skills[]", skill);
       });
-
-    //   // Add education data to formData
-    //   educations.forEach((education, index) => {
-    //     formData.append(`educations[${index}][degree]`, education.degree);
-    //     formData.append(
-    //       `educations[${index}][university]`,
-    //       education.university
-    //     );
-    //     formData.append(
-    //       `educations[${index}][graduationYear]`,
-    //       education.graduationYear
-    //     );
-    //   });
 
       try {
         await axios.post(CREATE_EMPLOYEE_API_URL, formData, {
@@ -122,24 +108,6 @@ export default function CreateEmployee() {
     updatedSkills.splice(index, 1);
     setSkills(updatedSkills);
   };
-
-//   const addEducation = () => {
-//     if (degree && university && graduationYear) {
-//       const updatedEducations = [
-//         ...educations,
-//         { degree, university, graduationYear },
-//       ];
-//       setEducations(updatedEducations);
-//     } else {
-//       alert("Fill out all the fields");
-//     }
-//   };
-
-//   const removeEducation = (index) => {
-//     const updatedEducations = [...educations];
-//     updatedEducations.splice(index, 1);
-//     setEducations(updatedEducations);
-//   };
 
   return (
     <Grid paddingTop={"20px"} width={"100vw"}>
@@ -237,20 +205,22 @@ export default function CreateEmployee() {
             />
           </FormControl>
           <FormControl style={fieldStyle}>
-            <Title>Department</Title>
-            {departments ? (
-              <Select
-                style={inputStyle}
-                onChange={(e) => setDepartment(e.target.value)}
-                IconComponent={ArrowDropDown}
-                defaultValue={department}
-              >
-                {departments.map((dept) => (
-                  <MenuItem key={dept} value={dept}>
-                    {dept}
-                  </MenuItem>
-                ))}
-              </Select>
+            {departmentList ? (
+              <div>
+                <Title>Department</Title>
+                <Select
+                  style={inputStyle}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  IconComponent={ArrowDropDown}
+                  defaultValue={department}
+                >
+                  {departmentList.map((dept) => (
+                    <MenuItem key={dept} value={dept}>
+                      {dept}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </div>
             ) : (
               <></>
             )}
@@ -283,57 +253,6 @@ export default function CreateEmployee() {
               Add
             </Button>
           </FormControl>
-          {/* <FormControl style={fieldStyle}>
-            <Title>Educational Qualifications</Title>
-            {educations ? (
-              <ol>
-                {educations.map((education, index) => (
-                  <li key={index}>
-                    <ul>
-                      <li>{`Degree: ${education.degree}`}</li>
-                      <li>{`University: ${education.university}`}</li>
-                      <li>{`Graduation Year: ${education.graduationYear}`}</li>
-                    </ul>
-                    <Button
-                      type="button"
-                      onClick={() => removeEducation(index)}
-                    >
-                      Remove
-                    </Button>
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <></>
-            )}
-            <FormControl>
-              <Input
-                type="text"
-                style={inputStyle}
-                onChange={handleEducationChange}
-                placeholder="Degree"
-              />
-            </FormControl>
-            <FormControl>
-              <Input
-                type="text"
-                style={inputStyle}
-                onChange={handleEducationChange}
-                placeholder="University"
-              />
-            </FormControl>
-            <FormControl>
-              <Input
-                type="number"
-                style={inputStyle}
-                onChange={handleEducationChange}
-                placeholder="Graduation Year"
-              />
-            </FormControl>
-            <Button type="button" onClick={addEducation}>
-              Add
-            </Button>
-          </FormControl> */}
           <Button type="submit" onClick={submit}>
             Create
           </Button>

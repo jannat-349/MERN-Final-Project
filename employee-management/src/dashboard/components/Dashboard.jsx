@@ -24,7 +24,11 @@ import { useState } from "react";
 import { useEffect } from "react";
 import DashboardContext from "../context/DashboardContext";
 import { fetchDataFromAPI } from "../utils/fetchDataFromAPI";
-import { DELETE_EMPLOYEE_API_URL, GET_All_EMPLOYEES_API_URL } from "../api/api";
+import {
+  DELETE_EMPLOYEE_API_URL,
+  GET_All_DEPARTMENTS_API_URL,
+  GET_All_EMPLOYEES_API_URL,
+} from "../api/api";
 import axios from "axios";
 import TotalEmployees from "./dashboard/TotalEmployees";
 import Chart from "./dashboard/charts/Chart";
@@ -126,13 +130,12 @@ export default function Dashboard() {
       setPositionCounts(counts);
       setAgeSum(totalAge);
       setEmployees(data);
-      const uniqueDepartments = [
-        ...new Set(data.map((employee) => employee.department)),
-      ];
+      const data2 = await fetchDataFromAPI(GET_All_DEPARTMENTS_API_URL);
+      setDepartments(["All", ...data2.map((dept) => dept.name)]);
+
       const uniquePositions = [
         ...new Set(data.map((employee) => employee.position)),
       ];
-      setDepartments(["All", ...uniqueDepartments]);
       setPositions(["All", ...uniquePositions]);
       setSearchList(data);
       setIsLoading(false);

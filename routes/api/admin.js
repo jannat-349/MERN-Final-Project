@@ -2,6 +2,7 @@ const express = require("express");
 const Employee = require("../../models/Employee");
 const multer = require("multer");
 const path = require("path");
+const Department = require("../../models/Department");
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -66,13 +67,20 @@ router.post("/employee/create", upload.single("image"), async (req, res) => {
   }
 });
 
-
 router.get("/employees", async (req, res) => {
   try {
     const employees = (await Employee.find({})).filter(
       (employee) => employee.isDeleted === false
     );
     res.status(200).json(employees);
+  } catch (error) {
+    res.status(500).send(`Something Went wrong`);
+  }
+});
+router.get("/departments", async (req, res) => {
+  try {
+    const departments = await Department.find({});
+    res.status(200).json(departments);
   } catch (error) {
     res.status(500).send(`Something Went wrong`);
   }
