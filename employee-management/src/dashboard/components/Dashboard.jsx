@@ -18,7 +18,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { mainListItems, secondaryListItems } from "./ListItems";
-import Chart from "./Chart";
 import { SearchEmployee } from "./SearchEmployee";
 import EmployeeTable from "./EmployeeTable";
 import { useState } from "react";
@@ -28,6 +27,7 @@ import { fetchDataFromAPI } from "../utils/fetchDataFromAPI";
 import { DELETE_EMPLOYEE_API_URL, GET_All_EMPLOYEES_API_URL } from "../api/api";
 import axios from "axios";
 import TotalEmployees from "./TotalEmployees";
+import Chart from "./charts/Chart";
 
 function Copyright(props) {
   return (
@@ -93,7 +93,6 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
@@ -167,7 +166,7 @@ export default function Dashboard() {
           <AppBar position="absolute" open={open}>
             <Toolbar
               sx={{
-                pr: "24px", // keep right padding when drawer closed
+                pr: "24px",
               }}
             >
               <IconButton
@@ -232,41 +231,108 @@ export default function Dashboard() {
           >
             <Toolbar />
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+              <Grid
+                item
+                xs={12}
+                style={{ display: "flex", justifyContent: "space-between" }}
+                container
+                spacing={3}
+                marginBottom={3}
+              >
+                <Grid item xs={12} md={6}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 340,
+                    }}
+                  >
+                    <Chart data={positionCounts} type={"bar"}/>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 340,
+                    }}
+                  >
+                    <Chart data={positionCounts} type={"line"}/>
+                  </Paper>
+                </Grid>
+              </Grid>
               <Grid container spacing={3}>
-                {/* Search Employee */}
-                <Grid item xs={12} md={8} lg={9}>
-                  <SearchEmployee
-                    searchList={searchList}
-                    onSearch={handleSearch}
-                  />
-                </Grid>
-                {/* Chart */}
-                <Grid item xs={12} md={8} lg={9}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: "flex",
-                      flexDirection: "column",
-                      height: 240,
-                    }}
+                <Grid
+                  item
+                  xs={12}
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                  container
+                  spacing={3}
+                >
+                  <Grid
+                    item
+                    xs={12}
+                    lg={8}
+                    style={{ display: "flex", flexDirection: "column" }}
                   >
-                    <Chart />
-                  </Paper>
+                    <Paper
+                      sx={{
+                        p: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "auto",
+                      }}
+                    >
+                      <SearchEmployee
+                        searchList={searchList}
+                        onSearch={handleSearch}
+                      />
+                    </Paper>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-evenly",
+                        marginTop: 70,
+                      }}
+                    >
+                      <Paper
+                        sx={{
+                          p: 2,
+                          display: "flex",
+                          flexDirection: "column",
+                          height: "auto",
+                        }}
+                      >
+                        Filter By Dept
+                      </Paper>
+                      <Paper
+                        sx={{
+                          p: 2,
+                          display: "flex",
+                          flexDirection: "column",
+                          height: "auto",
+                        }}
+                      >
+                        Filter By Position
+                      </Paper>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Paper
+                      sx={{
+                        p: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        height: 240,
+                      }}
+                    >
+                      <TotalEmployees />
+                    </Paper>
+                  </Grid>
                 </Grid>
-                {/* Recent Deposits */}
-                <Grid item xs={12} md={4} lg={3}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: "flex",
-                      flexDirection: "column",
-                      height: 240,
-                    }}
-                  >
-                    <TotalEmployees />
-                  </Paper>
-                </Grid>
-                {/* Employee Table*/}
                 <Grid item xs={12}>
                   <Paper
                     sx={{
@@ -280,7 +346,6 @@ export default function Dashboard() {
                   </Paper>
                 </Grid>
               </Grid>
-              <Copyright sx={{ pt: 4 }} />
             </Container>
           </Box>
         </Box>

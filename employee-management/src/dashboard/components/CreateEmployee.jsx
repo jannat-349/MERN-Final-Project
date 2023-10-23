@@ -39,10 +39,10 @@ export default function CreateEmployee() {
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
   const [image, setImage] = useState(null);
-  //   const [education, setEducation] = useState([]);
-  //   const [degree, setDegree] = useState("");
-  //   const [university, setUniversity] = useState("");
-  //   const [graduationYear, setGraduationYear] = useState(0);
+//   const [educations, setEducations] = useState([]); // Updated to use educations state
+//   const [degree, setDegree] = useState("");
+//   const [university, setUniversity] = useState("");
+//   const [graduationYear, setGraduationYear] = useState(0);
   const [departments, setDepartments] = useState([
     "Choose a department",
     "Department A",
@@ -50,6 +50,14 @@ export default function CreateEmployee() {
     "Analytics",
     "Department C",
   ]);
+
+//   const handleEducationChange = (e) => {
+//     const { name, value } = e.target;
+//     setEducations({
+//       ...educations,
+//       [name]: value,
+//     });
+//   };
 
   async function submit(e) {
     if (department === "Choose a department") {
@@ -72,6 +80,20 @@ export default function CreateEmployee() {
       skills.forEach((skill) => {
         formData.append("skills[]", skill);
       });
+
+    //   // Add education data to formData
+    //   educations.forEach((education, index) => {
+    //     formData.append(`educations[${index}][degree]`, education.degree);
+    //     formData.append(
+    //       `educations[${index}][university]`,
+    //       education.university
+    //     );
+    //     formData.append(
+    //       `educations[${index}][graduationYear]`,
+    //       education.graduationYear
+    //     );
+    //   });
+
       try {
         await axios.post(CREATE_EMPLOYEE_API_URL, formData, {
           headers: {
@@ -87,9 +109,9 @@ export default function CreateEmployee() {
 
   const addSkill = () => {
     if (skill) {
-      const updatedSkills = [...skills, skill]; // Use the spread operator to create a new array
+      const updatedSkills = [...skills, skill];
       setSkills(updatedSkills);
-      setSkill(""); // Clear the input field
+      setSkill("");
     } else {
       alert("Enter a skill to add");
     }
@@ -101,22 +123,23 @@ export default function CreateEmployee() {
     setSkills(updatedSkills);
   };
 
-  //   const addEducation = () => {
-  //     if (degree && university && graduationYear) {
-  //       setEducation([...education, { degree, university, graduationYear }]);
-  //       setDegree("");
-  //       setUniversity("");
-  //       setGraduationYear("");
-  //     } else {
-  //       alert("Fill up all the fields of education");
-  //     }
-  //   };
+//   const addEducation = () => {
+//     if (degree && university && graduationYear) {
+//       const updatedEducations = [
+//         ...educations,
+//         { degree, university, graduationYear },
+//       ];
+//       setEducations(updatedEducations);
+//     } else {
+//       alert("Fill out all the fields");
+//     }
+//   };
 
-  //   const removeEducation = (index) => {
-  //     const updatedEducation = [...education];
-  //     updatedEducation.splice(index, 1);
-  //     setEducation(updatedEducation);
-  //   };
+//   const removeEducation = (index) => {
+//     const updatedEducations = [...educations];
+//     updatedEducations.splice(index, 1);
+//     setEducations(updatedEducations);
+//   };
 
   return (
     <Grid paddingTop={"20px"} width={"100vw"}>
@@ -261,15 +284,16 @@ export default function CreateEmployee() {
             </Button>
           </FormControl>
           {/* <FormControl style={fieldStyle}>
-            <Title>Education</Title>
-
-            {education ? (
+            <Title>Educational Qualifications</Title>
+            {educations ? (
               <ol>
-                {education.map((edu, index) => (
+                {educations.map((education, index) => (
                   <li key={index}>
-                    <p>Degree: {edu.degree}</p>
-                    <p>University: {edu.university}</p>
-                    <p>Graduation Year: {edu.graduationYear}</p>
+                    <ul>
+                      <li>{`Degree: ${education.degree}`}</li>
+                      <li>{`University: ${education.university}`}</li>
+                      <li>{`Graduation Year: ${education.graduationYear}`}</li>
+                    </ul>
                     <Button
                       type="button"
                       onClick={() => removeEducation(index)}
@@ -282,35 +306,28 @@ export default function CreateEmployee() {
             ) : (
               <></>
             )}
-            <Typography>Add an education</Typography>
             <FormControl>
               <Input
                 type="text"
                 style={inputStyle}
-                onChange={(e) => {
-                  setDegree(e.target.value);
-                }}
-                placeholder="Add a degree"
+                onChange={handleEducationChange}
+                placeholder="Degree"
               />
             </FormControl>
             <FormControl>
               <Input
                 type="text"
                 style={inputStyle}
-                onChange={(e) => {
-                  setUniversity(e.target.value);
-                }}
-                placeholder="Add a university"
+                onChange={handleEducationChange}
+                placeholder="University"
               />
             </FormControl>
             <FormControl>
               <Input
                 type="number"
                 style={inputStyle}
-                onChange={(e) => {
-                  setGraduationYear(e.target.value);
-                }}
-                placeholder="Add a graduation year"
+                onChange={handleEducationChange}
+                placeholder="Graduation Year"
               />
             </FormControl>
             <Button type="button" onClick={addEducation}>

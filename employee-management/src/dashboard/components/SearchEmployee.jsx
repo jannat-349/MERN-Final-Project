@@ -12,9 +12,9 @@ export function SearchEmployee({ onSearch, searchList }) {
   };
   return (
     <>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div style={{ display: "flex", alignItems: "center"}}>
         <Autocomplete
-          style={{ width: "30vw" }}
+          style={{ width: "50vw" }}
           freeSolo
           id="free-solo-2-demo"
           disableClearable

@@ -27,6 +27,7 @@ import Title from "./Title";
 import { fieldStyle } from "../common/styles/fieldStyle";
 import { avatarStyle } from "../common/styles/avatarStyle";
 import { inputStyle } from "../common/styles/inputStyle";
+import { getImageUrl } from "../utils/imgUrl";
 
 export default function UpdateEmployee() {
   const { employeeId } = useParams();
@@ -47,10 +48,10 @@ export default function UpdateEmployee() {
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
   const [image, setImage] = useState(null);
-  //   const [education, setEducation] = useState([]);
-  //   const [degree, setDegree] = useState("");
-  //   const [university, setUniversity] = useState("");
-  //   const [graduationYear, setGraduationYear] = useState(0);
+  // const [educations, setEducations] = useState([]);
+  // const [degree, setDegree] = useState("");
+  // const [university, setUniversity] = useState("");
+  // const [graduationYear, setGraduationYear] = useState(0);
   const [departments, setDepartments] = useState([
     "Select a department",
     "Department A",
@@ -65,7 +66,6 @@ export default function UpdateEmployee() {
           GET_AN_EMPLOYEE_API_URL + employeeId
         );
         setEmployee(foundEmployee);
-        console.log(foundEmployee.skills);
         setId(foundEmployee.id);
         setFirstName(foundEmployee.firstName);
         setLastName(foundEmployee.lastName);
@@ -78,6 +78,7 @@ export default function UpdateEmployee() {
         setSkills(foundEmployee.skills);
         setSalary(foundEmployee.salary);
         setImage(foundEmployee.image);
+        // setEducations(foundEmployee.educations);
         setIsLoading(false);
       } catch (err) {
         alert("Failed to load data");
@@ -103,8 +104,11 @@ export default function UpdateEmployee() {
     formData.append("salary", salary);
     formData.append("department", department);
     skills.forEach((skill) => {
-      formData.append("skills[]", skill); // Use 'skills[]' to send an array
+      formData.append("skills[]", skill);
     });
+    // educations.forEach((education) => {
+    //   formData.append("educations[]", education);
+    // });
     try {
       await axios.put(UPDATE_EMPLOYEE_API_URL + employeeId, formData, {
         headers: {
@@ -131,6 +135,24 @@ export default function UpdateEmployee() {
     updatedSkills.splice(index, 1);
     setSkills(updatedSkills);
   };
+
+  // const addEducation = () => {
+  //   if (degree && university && graduationYear) {
+  //     const updatedEducations = [
+  //       ...educations,
+  //       { degree, university, graduationYear },
+  //     ];
+  //     setEducations(updatedEducations);
+  //   } else {
+  //     alert("Fill out all the fields");
+  //   }
+  // };
+
+  // const removeEducation = (index) => {
+  //   const updatedEducations = [...educations];
+  //   updatedEducations.splice(index, 1);
+  //   setEducations(updatedEducations);
+  // };
 
   return isLoading ? (
     <h1>Loading...</h1>
@@ -213,14 +235,20 @@ export default function UpdateEmployee() {
               onChange={(e) => setAddress(e.target.value)}
             />
           </FormControl>
-          <InputLabel>Image</InputLabel>
+          <InputLabel>Change Image</InputLabel>
           <FormControl style={fieldStyle}>
+            <img
+              src={"/public/" + getImageUrl(employee.image)}
+              alt={employee.name}
+              style={{ width: "200px", height: "200px" }}
+            />
             <Input
               type="file"
               name="image"
               onChange={(e) => setImage(e.target.files[0])}
             />
           </FormControl>
+
           <InputLabel>Joining Date</InputLabel>
           <FormControl style={fieldStyle}>
             <Input
@@ -286,6 +314,65 @@ export default function UpdateEmployee() {
               Add
             </Button>
           </FormControl>
+
+          {/* <FormControl style={fieldStyle}>
+            <Title>Educational Qualifications</Title>
+            {educations ? (
+              <ol>
+                {educations.map((education, index) => (
+                  <li key={index}>
+                    <ul>
+                      <li>{`Degree: ${education.degree}`}</li>
+                      <li>{`University: ${education.university}`}</li>
+                      <li>{`Graduation Year: ${education.graduationYear}`}</li>
+                    </ul>
+                    <Button
+                      type="button"
+                      onClick={() => removeEducation(index)}
+                    >
+                      Remove
+                    </Button>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <></>
+            )}
+            <FormControl>
+              <Input
+                type="text"
+                style={inputStyle}
+                onChange={(e) => {
+                  setDegree(e.target.value);
+                }}
+                placeholder="Degree"
+              />
+            </FormControl>
+            <FormControl>
+              <Input
+                type="text"
+                style={inputStyle}
+                onChange={(e) => {
+                  setUniversity(e.target.value);
+                }}
+                placeholder="University"
+              />
+            </FormControl>
+            <FormControl>
+              <Input
+                type="number"
+                style={inputStyle}
+                onChange={(e) => {
+                  setGraduationYear(e.target.value);
+                }}
+                placeholder="Graduation Year"
+              />
+            </FormControl>
+            <Button type="button" onClick={addEducation}>
+              Add
+            </Button>
+          </FormControl> */}
+
           <Button type="submit" onClick={submit}>
             Update
           </Button>

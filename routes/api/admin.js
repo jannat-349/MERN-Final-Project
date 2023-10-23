@@ -30,11 +30,11 @@ router.post("/employee/create", upload.single("image"), async (req, res) => {
       salary,
       department,
       skills,
-      // education,
+      // educations,
     } = req.body;
     const image = path.basename(req.file.path);
-    // education = JSON.parse(education);
-    // console.log(education);
+    // const parsedEducations = JSON.parse(educations);
+
     const employeeObj = new Employee({
       id,
       firstName,
@@ -50,9 +50,8 @@ router.post("/employee/create", upload.single("image"), async (req, res) => {
       joiningDate,
       salary,
       skills,
-      // education,
+      // educations: parsedEducations,
     });
-    console.log(employeeObj);
 
     await employeeObj
       .save()
@@ -66,6 +65,7 @@ router.post("/employee/create", upload.single("image"), async (req, res) => {
     console.error(error);
   }
 });
+
 
 router.get("/employees", async (req, res) => {
   try {

@@ -16,6 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import DashboardContext from "../context/DashboardContext";
+import { getImageUrl } from "../utils/imgUrl";
 
 export default function EmployeeTable({ onDelete }) {
   const [openDialogs, setOpenDialogs] = useState({});
@@ -44,10 +45,6 @@ export default function EmployeeTable({ onDelete }) {
       ...prevState,
       [employeeId]: false,
     }));
-  };
-
-  const getImageUrl = (filename) => {
-    return `uploads/${filename}`;
   };
 
   const columns = [

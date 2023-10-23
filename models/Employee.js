@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+// const educationSchema = new mongoose.Schema({
+//   degree: String,
+//   university: String,
+//   graduationYear: Number,
+// });
+
 const employeeSchema = new mongoose.Schema(
   {
     id: {
@@ -59,19 +65,7 @@ const employeeSchema = new mongoose.Schema(
       },
     ],
 
-    // education: [
-    //   {
-    //     degree: {
-    //       type: String,
-    //     },
-    //     university: {
-    //       type: String,
-    //     },
-    //     graduationYear: {
-    //       type: Number,
-    //     },
-    //   },
-    // ],
+    // educations: [educationSchema],
     isDeleted: {
       type: Boolean,
       default: false,
