@@ -1,13 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Button,
-  Checkbox,
-  Divider,
   FormControl,
-  FormControlLabel,
   FormGroup,
   Grid,
   Input,
@@ -15,25 +12,19 @@ import {
   MenuItem,
   Paper,
   Select,
-  TextField,
   Typography,
 } from "@mui/material";
 import { ArrowDropDown, HowToReg } from "@mui/icons-material";
 import axios from "axios";
-import { fetchDataFromAPI } from "../utils/fetchDataFromAPI";
-import { GET_AN_EMPLOYEE_API_URL, UPDATE_EMPLOYEE_API_URL } from "../api/api";
-import { paperStyle } from "../common/styles/paperStyle";
-import Title from "./Title";
-import { fieldStyle } from "../common/styles/fieldStyle";
-import { avatarStyle } from "../common/styles/avatarStyle";
-import { inputStyle } from "../common/styles/inputStyle";
-import { getImageUrl } from "../utils/imgUrl";
+import { CREATE_EMPLOYEE_API_URL } from "../../api/api";
+import { paperStyle } from "../../common/styles/paperStyle";
+import Title from "../extras/Title";
+import { fieldStyle } from "../../common/styles/fieldStyle";
+import { avatarStyle } from "../../common/styles/avatarStyle";
+import { inputStyle } from "../../common/styles/inputStyle";
 
-export default function UpdateEmployee() {
-  const { employeeId } = useParams();
+export default function CreateEmployee() {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
-  const [employee, setEmployee] = useState({});
   const [id, setId] = useState(0);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -43,81 +34,76 @@ export default function UpdateEmployee() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [department, setDepartment] = useState("");
+  const [department, setDepartment] = useState("Choose a department");
   const [joiningDate, setJoiningDate] = useState(new Date());
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
   const [image, setImage] = useState(null);
-  // const [educations, setEducations] = useState([]);
-  // const [degree, setDegree] = useState("");
-  // const [university, setUniversity] = useState("");
-  // const [graduationYear, setGraduationYear] = useState(0);
+//   const [educations, setEducations] = useState([]); // Updated to use educations state
+//   const [degree, setDegree] = useState("");
+//   const [university, setUniversity] = useState("");
+//   const [graduationYear, setGraduationYear] = useState(0);
   const [departments, setDepartments] = useState([
-    "Select a department",
+    "Choose a department",
     "Department A",
     "Department B",
     "Analytics",
     "Department C",
   ]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const foundEmployee = await fetchDataFromAPI(
-          GET_AN_EMPLOYEE_API_URL + employeeId
-        );
-        setEmployee(foundEmployee);
-        setId(foundEmployee.id);
-        setFirstName(foundEmployee.firstName);
-        setLastName(foundEmployee.lastName);
-        setAge(foundEmployee.age);
-        setPosition(foundEmployee.position);
-        setEmail(foundEmployee.email);
-        setPhone(foundEmployee.phone);
-        setAddress(foundEmployee.address);
-        setDepartment(foundEmployee.department);
-        setSkills(foundEmployee.skills);
-        setSalary(foundEmployee.salary);
-        setImage(foundEmployee.image);
-        // setEducations(foundEmployee.educations);
-        setIsLoading(false);
-      } catch (err) {
-        alert("Failed to load data");
-        console.error(err);
-      }
-    };
-    fetchData();
-  }, []);
+
+//   const handleEducationChange = (e) => {
+//     const { name, value } = e.target;
+//     setEducations({
+//       ...educations,
+//       [name]: value,
+//     });
+//   };
 
   async function submit(e) {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("id", id);
-    formData.append("firstName", firstName);
-    formData.append("lastName", lastName);
-    formData.append("age", age);
-    formData.append("position", position);
-    formData.append("email", email);
-    formData.append("phone", phone);
-    formData.append("address", address);
-    formData.append("image", image);
-    formData.append("joiningDate", joiningDate);
-    formData.append("salary", salary);
-    formData.append("department", department);
-    skills.forEach((skill) => {
-      formData.append("skills[]", skill);
-    });
-    // educations.forEach((education) => {
-    //   formData.append("educations[]", education);
-    // });
-    try {
-      await axios.put(UPDATE_EMPLOYEE_API_URL + employeeId, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    if (department === "Choose a department") {
+      alert("Please select a department!");
+    } else {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("age", age);
+      formData.append("position", position);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      formData.append("address", address);
+      formData.append("image", image);
+      formData.append("joiningDate", joiningDate);
+      formData.append("salary", salary);
+      formData.append("department", department);
+      skills.forEach((skill) => {
+        formData.append("skills[]", skill);
       });
-      navigate("/dashboard");
-    } catch (error) {
-      console.log(error);
+
+    //   // Add education data to formData
+    //   educations.forEach((education, index) => {
+    //     formData.append(`educations[${index}][degree]`, education.degree);
+    //     formData.append(
+    //       `educations[${index}][university]`,
+    //       education.university
+    //     );
+    //     formData.append(
+    //       `educations[${index}][graduationYear]`,
+    //       education.graduationYear
+    //     );
+    //   });
+
+      try {
+        await axios.post(CREATE_EMPLOYEE_API_URL, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        navigate("/dashboard");
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
@@ -125,6 +111,7 @@ export default function UpdateEmployee() {
     if (skill) {
       const updatedSkills = [...skills, skill];
       setSkills(updatedSkills);
+      setSkill("");
     } else {
       alert("Enter a skill to add");
     }
@@ -136,27 +123,25 @@ export default function UpdateEmployee() {
     setSkills(updatedSkills);
   };
 
-  // const addEducation = () => {
-  //   if (degree && university && graduationYear) {
-  //     const updatedEducations = [
-  //       ...educations,
-  //       { degree, university, graduationYear },
-  //     ];
-  //     setEducations(updatedEducations);
-  //   } else {
-  //     alert("Fill out all the fields");
-  //   }
-  // };
+//   const addEducation = () => {
+//     if (degree && university && graduationYear) {
+//       const updatedEducations = [
+//         ...educations,
+//         { degree, university, graduationYear },
+//       ];
+//       setEducations(updatedEducations);
+//     } else {
+//       alert("Fill out all the fields");
+//     }
+//   };
 
-  // const removeEducation = (index) => {
-  //   const updatedEducations = [...educations];
-  //   updatedEducations.splice(index, 1);
-  //   setEducations(updatedEducations);
-  // };
+//   const removeEducation = (index) => {
+//     const updatedEducations = [...educations];
+//     updatedEducations.splice(index, 1);
+//     setEducations(updatedEducations);
+//   };
 
-  return isLoading ? (
-    <h1>Loading...</h1>
-  ) : (
+  return (
     <Grid paddingTop={"20px"} width={"100vw"}>
       <Paper elevation={20} style={paperStyle}>
         <Grid align="center" paddingBottom={"40px"}>
@@ -174,7 +159,6 @@ export default function UpdateEmployee() {
             <Input
               type="Number"
               style={inputStyle}
-              defaultValue={employee.id}
               onChange={(e) => setId(e.target.value)}
             />
           </FormControl>
@@ -182,7 +166,6 @@ export default function UpdateEmployee() {
             <InputLabel>First Name</InputLabel>
             <Input
               style={inputStyle}
-              defaultValue={employee.firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
           </FormControl>
@@ -190,7 +173,6 @@ export default function UpdateEmployee() {
             <InputLabel>Last Name</InputLabel>
             <Input
               style={inputStyle}
-              defaultValue={employee.lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
           </FormControl>
@@ -198,7 +180,6 @@ export default function UpdateEmployee() {
             <InputLabel>Age</InputLabel>
             <Input
               type="Number"
-              defaultValue={employee.age}
               style={inputStyle}
               onChange={(e) => setAge(e.target.value)}
             />
@@ -207,7 +188,6 @@ export default function UpdateEmployee() {
             <InputLabel>Position</InputLabel>
             <Input
               style={inputStyle}
-              defaultValue={employee.position}
               onChange={(e) => setPosition(e.target.value)}
             />
           </FormControl>
@@ -215,7 +195,6 @@ export default function UpdateEmployee() {
             <InputLabel>Email</InputLabel>
             <Input
               style={inputStyle}
-              defaultValue={employee.email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </FormControl>
@@ -223,7 +202,6 @@ export default function UpdateEmployee() {
             <InputLabel>Phone</InputLabel>
             <Input
               style={inputStyle}
-              defaultValue={employee.phone}
               onChange={(e) => setPhone(e.target.value)}
             />
           </FormControl>
@@ -231,29 +209,21 @@ export default function UpdateEmployee() {
             <InputLabel>Address</InputLabel>
             <Input
               style={inputStyle}
-              defaultValue={employee.address}
               onChange={(e) => setAddress(e.target.value)}
             />
           </FormControl>
-          <InputLabel>Change Image</InputLabel>
+          <InputLabel>Image</InputLabel>
           <FormControl style={fieldStyle}>
-            <img
-              src={"/public/" + getImageUrl(employee.image)}
-              alt={employee.name}
-              style={{ width: "200px", height: "200px" }}
-            />
             <Input
               type="file"
               name="image"
               onChange={(e) => setImage(e.target.files[0])}
             />
           </FormControl>
-
           <InputLabel>Joining Date</InputLabel>
           <FormControl style={fieldStyle}>
             <Input
               type="Date"
-              defaultValue={joiningDate.toISOString().split("T")[0]}
               style={inputStyle}
               onChange={(e) => setJoiningDate(new Date(e.target.value))}
             />
@@ -262,7 +232,6 @@ export default function UpdateEmployee() {
             <InputLabel>Salary</InputLabel>
             <Input
               style={inputStyle}
-              defaultValue={employee.salary}
               type="Number"
               onChange={(e) => setSalary(e.target.value)}
             />
@@ -274,7 +243,7 @@ export default function UpdateEmployee() {
                 style={inputStyle}
                 onChange={(e) => setDepartment(e.target.value)}
                 IconComponent={ArrowDropDown}
-                defaultValue={employee.department}
+                defaultValue={department}
               >
                 {departments.map((dept) => (
                   <MenuItem key={dept} value={dept}>
@@ -314,7 +283,6 @@ export default function UpdateEmployee() {
               Add
             </Button>
           </FormControl>
-
           {/* <FormControl style={fieldStyle}>
             <Title>Educational Qualifications</Title>
             {educations ? (
@@ -342,9 +310,7 @@ export default function UpdateEmployee() {
               <Input
                 type="text"
                 style={inputStyle}
-                onChange={(e) => {
-                  setDegree(e.target.value);
-                }}
+                onChange={handleEducationChange}
                 placeholder="Degree"
               />
             </FormControl>
@@ -352,9 +318,7 @@ export default function UpdateEmployee() {
               <Input
                 type="text"
                 style={inputStyle}
-                onChange={(e) => {
-                  setUniversity(e.target.value);
-                }}
+                onChange={handleEducationChange}
                 placeholder="University"
               />
             </FormControl>
@@ -362,9 +326,7 @@ export default function UpdateEmployee() {
               <Input
                 type="number"
                 style={inputStyle}
-                onChange={(e) => {
-                  setGraduationYear(e.target.value);
-                }}
+                onChange={handleEducationChange}
                 placeholder="Graduation Year"
               />
             </FormControl>
@@ -372,14 +334,13 @@ export default function UpdateEmployee() {
               Add
             </Button>
           </FormControl> */}
-
           <Button type="submit" onClick={submit}>
-            Update
+            Create
           </Button>
         </FormGroup>
-        <p align="center">
+        <Typography align="center">
           <Link to="/dashboard">Cancel</Link>
-        </p>
+        </Typography>
       </Paper>
     </Grid>
   );

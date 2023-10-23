@@ -1,12 +1,13 @@
 import * as React from "react";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
-import Title from "./Title";
-import DashboardContext from "../context/DashboardContext";
+import Title from "../extras/Title";
+import DashboardContext from "../../context/DashboardContext";
 import { useContext } from "react";
 import { Add } from "@mui/icons-material";
 const StatisticsDisplay = ({ ageSum, employeeCount }) => {
-  const averageAge = employeeCount > 0 ? ageSum / employeeCount : 0;
+  const averageAge =
+    employeeCount > 0 ? (ageSum / employeeCount).toFixed(2) : 0.0;
 
   return (
     <div>

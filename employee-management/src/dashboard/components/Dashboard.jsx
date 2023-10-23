@@ -17,17 +17,17 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems, secondaryListItems } from "./ListItems";
-import { SearchEmployee } from "./SearchEmployee";
-import EmployeeTable from "./EmployeeTable";
+import { mainListItems, secondaryListItems } from "./extras/ListItems";
+import { SearchEmployee } from "./dashboard/SearchEmployee";
+import EmployeeTable from "./dashboard/EmployeeTable";
 import { useState } from "react";
 import { useEffect } from "react";
 import DashboardContext from "../context/DashboardContext";
 import { fetchDataFromAPI } from "../utils/fetchDataFromAPI";
 import { DELETE_EMPLOYEE_API_URL, GET_All_EMPLOYEES_API_URL } from "../api/api";
 import axios from "axios";
-import TotalEmployees from "./TotalEmployees";
-import Chart from "./charts/Chart";
+import TotalEmployees from "./dashboard/TotalEmployees";
+import Chart from "./dashboard/charts/Chart";
 
 function Copyright(props) {
   return (
