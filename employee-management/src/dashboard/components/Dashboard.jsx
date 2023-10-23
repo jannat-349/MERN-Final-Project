@@ -28,6 +28,10 @@ import { DELETE_EMPLOYEE_API_URL, GET_All_EMPLOYEES_API_URL } from "../api/api";
 import axios from "axios";
 import TotalEmployees from "./dashboard/TotalEmployees";
 import Chart from "./dashboard/charts/Chart";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Title from "./extras/Title";
+import { Button } from "@mui/material";
 
 function Copyright(props) {
   return (
@@ -101,6 +105,10 @@ export default function Dashboard() {
   const [searchList, setSearchList] = useState([]);
   const [positionCounts, setPositionCounts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedDepartment, setSelectedDepartment] = useState("All");
+  const [selectedPosition, setSelectedPosition] = useState("All");
+  const [departments, setDepartments] = useState([]);
+  const [positions, setPositions] = useState([]);
 
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
@@ -118,6 +126,14 @@ export default function Dashboard() {
       setPositionCounts(counts);
       setAgeSum(totalAge);
       setEmployees(data);
+      const uniqueDepartments = [
+        ...new Set(data.map((employee) => employee.department)),
+      ];
+      const uniquePositions = [
+        ...new Set(data.map((employee) => employee.position)),
+      ];
+      setDepartments(["All", ...uniqueDepartments]);
+      setPositions(["All", ...uniquePositions]);
       setSearchList(data);
       setIsLoading(false);
     } catch (err) {
@@ -126,7 +142,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchData(); // Fetch data when the component mounts
+    fetchData();
   }, []);
 
   const handleSearch = (option) => {
@@ -154,6 +170,41 @@ export default function Dashboard() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const filterEmployees = () => {
+    let filteredEmployees = searchList;
+
+    if (selectedDepartment !== "All") {
+      filteredEmployees = filteredEmployees.filter(
+        (employee) => employee.department === selectedDepartment
+      );
+    }
+
+    if (selectedPosition !== "All") {
+      filteredEmployees = filteredEmployees.filter(
+        (employee) => employee.position === selectedPosition
+      );
+    }
+    setEmployees(filteredEmployees);
+  };
+  useEffect(() => {
+    filterEmployees();
+  }, [selectedDepartment, selectedPosition]);
+
+  const handleDepartmentChange = (event) => {
+    setSelectedDepartment(event.target.value);
+    filterEmployees();
+  };
+
+  const handlePositionChange = (event) => {
+    setSelectedPosition(event.target.value);
+    filterEmployees();
+  };
+  const handleReset = () => {
+    setSelectedDepartment("All");
+    setSelectedPosition("All");
+    fetchData();
   };
 
   return isLoading ? (
@@ -248,7 +299,7 @@ export default function Dashboard() {
                       height: 340,
                     }}
                   >
-                    <Chart data={positionCounts} type={"bar"}/>
+                    <Chart data={positionCounts} type={"bar"} />
                   </Paper>
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -260,7 +311,7 @@ export default function Dashboard() {
                       height: 340,
                     }}
                   >
-                    <Chart data={positionCounts} type={"line"}/>
+                    <Chart data={positionCounts} type={"line"} />
                   </Paper>
                 </Grid>
               </Grid>
@@ -276,7 +327,11 @@ export default function Dashboard() {
                     item
                     xs={12}
                     lg={8}
-                    style={{ display: "flex", flexDirection: "column" }}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                    }}
                   >
                     <Paper
                       sx={{
@@ -294,8 +349,8 @@ export default function Dashboard() {
                     <div
                       style={{
                         display: "flex",
-                        justifyContent: "space-evenly",
-                        marginTop: 70,
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
                       <Paper
@@ -306,7 +361,18 @@ export default function Dashboard() {
                           height: "auto",
                         }}
                       >
-                        Filter By Dept
+                        <Title>Filter By Department</Title>
+                        <Select
+                          value={selectedDepartment}
+                          onChange={handleDepartmentChange}
+                          sx={{ width: 200, marginRight: 2 }}
+                        >
+                          {departments.map((department) => (
+                            <MenuItem key={department} value={department}>
+                              {department}
+                            </MenuItem>
+                          ))}
+                        </Select>
                       </Paper>
                       <Paper
                         sx={{
@@ -316,8 +382,28 @@ export default function Dashboard() {
                           height: "auto",
                         }}
                       >
-                        Filter By Position
+                        <Title>Filter By Position</Title>
+                        <Select
+                          value={selectedPosition}
+                          onChange={handlePositionChange}
+                          sx={{ width: 200 }}
+                        >
+                          {positions.map((position) => (
+                            <MenuItem key={position} value={position}>
+                              {position}
+                            </MenuItem>
+                          ))}
+                        </Select>
                       </Paper>
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleReset}
+                        sx={{ height: 40 }}
+                      >
+                        Reset
+                      </Button>
                     </div>
                   </Grid>
                   <Grid item xs={12} md={4}>
@@ -339,7 +425,7 @@ export default function Dashboard() {
                       p: 2,
                       display: "flex",
                       flexDirection: "column",
-                      height: 500,
+                      height: 490,
                     }}
                   >
                     <EmployeeTable onDelete={handleDeleteEmployee} />

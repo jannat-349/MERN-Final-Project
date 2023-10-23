@@ -22,7 +22,7 @@ export default function EmployeeTable({ onDelete }) {
   const [openDialogs, setOpenDialogs] = useState({});
   const [openDialogs2, setOpenDialogs2] = useState({});
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const { employees } = useContext(DashboardContext);
+  const { employees} = useContext(DashboardContext);
   const navigate = useNavigate();
 
   const handleClickOpen = (employeeId) => {
