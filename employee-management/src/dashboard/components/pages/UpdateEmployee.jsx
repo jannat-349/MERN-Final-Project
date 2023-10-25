@@ -21,7 +21,11 @@ import {
 import { ArrowDropDown, HowToReg } from "@mui/icons-material";
 import axios from "axios";
 import { fetchDataFromAPI } from "../../utils/fetchDataFromAPI";
-import { GET_AN_EMPLOYEE_API_URL, UPDATE_EMPLOYEE_API_URL } from "../../api/api";
+import {
+  GET_AN_EMPLOYEE_API_URL,
+  GET_All_DEPARTMENTS_API_URL,
+  UPDATE_EMPLOYEE_API_URL,
+} from "../../api/api";
 import { paperStyle } from "../../common/styles/paperStyle";
 import Title from "../extras/Title";
 import { fieldStyle } from "../../common/styles/fieldStyle";
@@ -44,6 +48,7 @@ export default function UpdateEmployee() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [department, setDepartment] = useState("");
+  const [departments, setDepartments] = useState([]);
   const [joiningDate, setJoiningDate] = useState(new Date());
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
@@ -52,19 +57,16 @@ export default function UpdateEmployee() {
   // const [degree, setDegree] = useState("");
   // const [university, setUniversity] = useState("");
   // const [graduationYear, setGraduationYear] = useState(0);
-  const [departments, setDepartments] = useState([
-    "Select a department",
-    "Department A",
-    "Department B",
-    "Analytics",
-    "Department C",
-  ]);
+  const [departmentList, setDepartmentList] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const foundEmployee = await fetchDataFromAPI(
           GET_AN_EMPLOYEE_API_URL + employeeId
         );
+        const data = await fetchDataFromAPI(GET_All_DEPARTMENTS_API_URL);
+        setDepartmentList(data.map((dept) => dept.name));
+
         setEmployee(foundEmployee);
         setId(foundEmployee.id);
         setFirstName(foundEmployee.firstName);
@@ -172,7 +174,7 @@ export default function UpdateEmployee() {
           <FormControl style={fieldStyle}>
             <InputLabel>Employee Id</InputLabel>
             <Input
-              type="Number"
+              type="text"
               style={inputStyle}
               defaultValue={employee.id}
               onChange={(e) => setId(e.target.value)}
@@ -269,14 +271,14 @@ export default function UpdateEmployee() {
           </FormControl>
           <FormControl style={fieldStyle}>
             <Title>Department</Title>
-            {departments ? (
+            {departmentList ? (
               <Select
                 style={inputStyle}
                 onChange={(e) => setDepartment(e.target.value)}
                 IconComponent={ArrowDropDown}
                 defaultValue={employee.department}
               >
-                {departments.map((dept) => (
+                {departmentList.map((dept) => (
                   <MenuItem key={dept} value={dept}>
                     {dept}
                   </MenuItem>

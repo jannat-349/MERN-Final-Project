@@ -26,24 +26,30 @@ export default function Chart({ data, type }) {
         },
       },
     },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
   };
   const positionNames = Object.keys(data);
   const numOfEmployees = Object.values(data);
 
-  const dataset = type === "bar"
-    ? {
-        label: "Barchart: Position vs Number of Employees",
-        data: numOfEmployees,
-        backgroundColor: ["rgba(75, 192, 192, 1)", "#ecf0f1", "#50AF95"],
-        borderColor: "black",
-        borderWidth: 2,
-      }
-    : {
-        label: "LineChart: Position vs Number of Employees",
-        data: numOfEmployees,
-        borderColor: "black",
-        borderWidth: 2,
-      };
+  const dataset =
+    type === "bar"
+      ? {
+          label: "Number of Employees",
+          data: numOfEmployees,
+          backgroundColor: ["rgba(75, 192, 192, 1)", "#ecf0f1", "#50AF95"],
+          borderColor: "black",
+          borderWidth: 2,
+        }
+      : {
+          label: "Number of Employees",
+          data: numOfEmployees,
+          borderColor: "black",
+          borderWidth: 2,
+        };
 
   const [userData, setUserData] = useState({
     labels: positionNames,

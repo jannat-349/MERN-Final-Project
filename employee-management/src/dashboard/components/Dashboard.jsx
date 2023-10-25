@@ -153,6 +153,11 @@ export default function Dashboard() {
       employee.name.toLowerCase().includes(option.toLowerCase())
     );
     setEmployees(filteredEmployees);
+    const totalAge = filteredEmployees.reduce(
+      (sum, employee) => sum + employee.age,
+      0
+    );
+    setAgeSum(totalAge);
   };
 
   const handleDeleteEmployee = async (employeeId) => {
@@ -190,6 +195,11 @@ export default function Dashboard() {
       );
     }
     setEmployees(filteredEmployees);
+    const totalAge = filteredEmployees.reduce(
+      (sum, employee) => sum + employee.age,
+      0
+    );
+    setAgeSum(totalAge);
   };
   useEffect(() => {
     filterEmployees();
@@ -285,39 +295,43 @@ export default function Dashboard() {
           >
             <Toolbar />
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-              <Grid
-                item
-                xs={12}
-                style={{ display: "flex", justifyContent: "space-between" }}
-                container
-                spacing={3}
-                marginBottom={3}
-              >
-                <Grid item xs={12} md={6}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: "flex",
-                      flexDirection: "column",
-                      height: 340,
-                    }}
-                  >
-                    <Chart data={positionCounts} type={"bar"} />
-                  </Paper>
+              {employees.length > 0 ? (
+                <Grid
+                  item
+                  xs={12}
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                  container
+                  spacing={3}
+                  marginBottom={3}
+                >
+                  <Grid item xs={12} md={6}>
+                    <Paper
+                      sx={{
+                        p: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        height: 340,
+                      }}
+                    >
+                      <Chart data={positionCounts} type={"bar"} />
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Paper
+                      sx={{
+                        p: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        height: 340,
+                      }}
+                    >
+                      <Chart data={positionCounts} type={"line"} />
+                    </Paper>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: "flex",
-                      flexDirection: "column",
-                      height: 340,
-                    }}
-                  >
-                    <Chart data={positionCounts} type={"line"} />
-                  </Paper>
-                </Grid>
-              </Grid>
+              ) : (
+                <></>
+              )}
               <Grid container spacing={3}>
                 <Grid
                   item
@@ -336,23 +350,10 @@ export default function Dashboard() {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Paper
-                      sx={{
-                        p: 2,
-                        display: "flex",
-                        flexDirection: "column",
-                        height: "auto",
-                      }}
-                    >
-                      <SearchEmployee
-                        searchList={searchList}
-                        onSearch={handleSearch}
-                      />
-                    </Paper>
                     <div
                       style={{
                         display: "flex",
-                        justifyContent: "space-between",
+                        gap: "20px",
                         alignItems: "center",
                       }}
                     >
@@ -368,7 +369,7 @@ export default function Dashboard() {
                         <Select
                           value={selectedDepartment}
                           onChange={handleDepartmentChange}
-                          sx={{ width: 200, marginRight: 2 }}
+                          sx={{ width: "375px", marginRight: 2 }}
                         >
                           {departments.map((department) => (
                             <MenuItem key={department} value={department}>
@@ -408,6 +409,19 @@ export default function Dashboard() {
                         Reset
                       </Button>
                     </div>
+                    <Paper
+                      sx={{
+                        p: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "auto",
+                      }}
+                    >
+                      <SearchEmployee
+                        searchList={searchList}
+                        onSearch={handleSearch}
+                      />
+                    </Paper>
                   </Grid>
                   <Grid item xs={12} md={4}>
                     <Paper

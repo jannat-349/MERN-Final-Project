@@ -44,7 +44,7 @@ export default function CreateEmployee() {
   const [skills, setSkills] = useState([]);
   const [skill, setSkill] = useState("");
   const [image, setImage] = useState(null);
-  
+
   const [departmentList, setDepartmentList] = useState([]);
   const fetchData = async () => {
     try {
@@ -59,37 +59,33 @@ export default function CreateEmployee() {
     fetchData();
   }, []);
   async function submit(e) {
-    if (department === "Choose a department") {
-      alert("Please select a department!");
-    } else {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append("id", id);
-      formData.append("firstName", firstName);
-      formData.append("lastName", lastName);
-      formData.append("age", age);
-      formData.append("position", position);
-      formData.append("email", email);
-      formData.append("phone", phone);
-      formData.append("address", address);
-      formData.append("image", image);
-      formData.append("joiningDate", joiningDate);
-      formData.append("salary", salary);
-      formData.append("department", department);
-      skills.forEach((skill) => {
-        formData.append("skills[]", skill);
-      });
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("age", age);
+    formData.append("position", position);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("address", address);
+    formData.append("image", image);
+    formData.append("joiningDate", joiningDate);
+    formData.append("salary", salary);
+    formData.append("department", department);
+    skills.forEach((skill) => {
+      formData.append("skills[]", skill);
+    });
 
-      try {
-        await axios.post(CREATE_EMPLOYEE_API_URL, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        navigate("/dashboard");
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      await axios.post(CREATE_EMPLOYEE_API_URL, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -125,7 +121,7 @@ export default function CreateEmployee() {
           <FormControl style={fieldStyle}>
             <InputLabel>Employee Id</InputLabel>
             <Input
-              type="Number"
+              type="text"
               style={inputStyle}
               onChange={(e) => setId(e.target.value)}
             />
