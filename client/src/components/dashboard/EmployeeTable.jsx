@@ -1,7 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import Title from "../extras/Title";
+import Title from "../Title";
 import { useEffect, useState } from "react";
 import { Delete, Edit } from "@mui/icons-material";
 
@@ -15,10 +15,10 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import DashboardContext from "../../context/DashboardContext";
 import { getImageUrl } from "../../utils/imgUrl";
+import DashboardContext from "../../contexts/DashboardContext";
 
-export default function EmployeeTable({ onDelete }) {
+export function EmployeeTable({ onDelete }) {
   const [openDialogs, setOpenDialogs] = useState({});
   const [openDialogs2, setOpenDialogs2] = useState({});
   const [selectedEmployee, setSelectedEmployee] = useState(null);

@@ -12,7 +12,7 @@ const {
 } = require("../services/employeeServices");
 const getAllDepartments = require("../services/departmentServices");
 
-employeeRoutes.use(authenticateToken);
+// employeeRoutes.use(authenticateToken);
 
 employeeRoutes.post(
   "/employee/create",

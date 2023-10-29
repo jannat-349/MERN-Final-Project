@@ -20,18 +20,18 @@ import {
 } from "@mui/material";
 import { ArrowDropDown, HowToReg } from "@mui/icons-material";
 import axios from "axios";
-import { fetchDataFromAPI } from "../../utils/fetchDataFromAPI";
+import { fetchDataFromAPI } from "./dashboard/utils/fetchDataFromAPI";
 import {
   GET_AN_EMPLOYEE_API_URL,
   GET_All_DEPARTMENTS_API_URL,
   UPDATE_EMPLOYEE_API_URL,
-} from "../../api/api";
-import { paperStyle } from "../../common/styles/paperStyle";
+} from "./dashboard/api/api";
+import { paperStyle } from "./dashboard/common/styles/paperStyle";
 import Title from "../extras/Title";
-import { fieldStyle } from "../../common/styles/fieldStyle";
-import { avatarStyle } from "../../common/styles/avatarStyle";
-import { inputStyle } from "../../common/styles/inputStyle";
-import { getImageUrl } from "../../utils/imgUrl";
+import { fieldStyle } from "./dashboard/common/styles/fieldStyle";
+import { avatarStyle } from "./dashboard/common/styles/avatarStyle";
+import { inputStyle } from "./dashboard/common/styles/inputStyle";
+import { getImageUrl } from "./dashboard/utils/imgUrl";
 
 export default function UpdateEmployee() {
   const { employeeId } = useParams();

@@ -3,7 +3,7 @@ import { Chart as ChartJS, registerables } from "chart.js";
 import BarChart from "./BarChart";
 import LineChart from "./LineChart";
 
-export default function Chart({ data, type }) {
+export function Chart({ data, type }) {
   ChartJS.register(...registerables);
 
   const chartOptions = {

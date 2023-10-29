@@ -1,12 +1,13 @@
 import * as React from "react";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
-import Title from "../extras/Title";
-import DashboardContext from "../../context/DashboardContext";
+import Title from "../Title";
 import { useContext } from "react";
 import { Add } from "@mui/icons-material";
+import DashboardContext from "../../contexts/DashboardContext";
 const StatisticsDisplay = ({ ageSum, employeeCount }) => {
-  const averageAge = employeeCount > 0 ? (ageSum / employeeCount).toFixed(2) : 0.00;
+  const averageAge =
+    employeeCount > 0 ? (ageSum / employeeCount).toFixed(2) : 0.0;
 
   return (
     <div>
@@ -22,7 +23,7 @@ const StatisticsDisplay = ({ ageSum, employeeCount }) => {
   );
 };
 
-export default function TotalEmployees() {
+export function TotalEmployees() {
   const { employees, ageSum } = useContext(DashboardContext);
   return (
     <React.Fragment>
