@@ -5,6 +5,7 @@ import Title from "../Title";
 import { useContext } from "react";
 import { Add } from "@mui/icons-material";
 import DashboardContext from "../../contexts/DashboardContext";
+import { Grid, Paper } from "@mui/material";
 const StatisticsDisplay = ({ ageSum, employeeCount }) => {
   const averageAge =
     employeeCount > 0 ? (ageSum / employeeCount).toFixed(2) : 0.0;
@@ -26,21 +27,30 @@ const StatisticsDisplay = ({ ageSum, employeeCount }) => {
 export function TotalEmployees() {
   const { employees, ageSum } = useContext(DashboardContext);
   return (
-    <React.Fragment>
-      <StatisticsDisplay ageSum={ageSum} employeeCount={employees.length} />
-      <div>
-        <Link
-          color="primary"
-          href="/admin/employee/create"
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Add></Add>
-          <p>Add new employee</p>
-        </Link>
-      </div>
-    </React.Fragment>
+    <Grid item xs={12} md={4}>
+      <Paper
+        sx={{
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: 240,
+        }}
+      >
+        <StatisticsDisplay ageSum={ageSum} employeeCount={employees.length} />
+        <div>
+          <Link
+            color="primary"
+            href="/create"
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Add></Add>
+            <p>Add new employee</p>
+          </Link>
+        </div>
+      </Paper>
+    </Grid>
   );
 }

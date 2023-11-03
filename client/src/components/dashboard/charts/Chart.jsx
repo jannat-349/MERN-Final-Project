@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Chart as ChartJS, registerables } from "chart.js";
 import BarChart from "./BarChart";
 import LineChart from "./LineChart";
+import { Grid, Paper } from "@mui/material";
 
-export function Chart({ data, type }) {
+export function Chart({ data }) {
   ChartJS.register(...registerables);
 
   const chartOptions = {
@@ -35,21 +36,13 @@ export function Chart({ data, type }) {
   const positionNames = Object.keys(data);
   const numOfEmployees = Object.values(data);
 
-  const dataset =
-    type === "bar"
-      ? {
-          label: "Number of Employees",
-          data: numOfEmployees,
-          backgroundColor: ["rgba(75, 192, 192, 1)", "#ecf0f1", "#50AF95"],
-          borderColor: "black",
-          borderWidth: 2,
-        }
-      : {
-          label: "Number of Employees",
-          data: numOfEmployees,
-          borderColor: "black",
-          borderWidth: 2,
-        };
+  const dataset = {
+    label: "Number of Employees",
+    data: numOfEmployees,
+    backgroundColor: ["rgba(75, 192, 192, 1)", "#ecf0f1", "#50AF95"],
+    borderColor: "black",
+    borderWidth: 2,
+  };
 
   const [userData, setUserData] = useState({
     labels: positionNames,
@@ -57,12 +50,39 @@ export function Chart({ data, type }) {
   });
 
   return (
-    <div style={{ width: 800, height: 250, marginTop: 40 }}>
-      {type === "bar" ? (
-        <BarChart data={userData} options={chartOptions} />
-      ) : (
-        <LineChart data={userData} options={chartOptions} />
-      )}
-    </div>
+      <Grid
+        item
+        xs={12}
+        md={12}
+        style={{ display: "flex", justifyContent: "space-between" }}
+        container
+        spacing={3}
+        marginBottom={3}
+      >
+        <Grid item xs={12} lg={6}>
+          <Paper
+            sx={{
+              p: 2,
+              display: "flex",
+              flexDirection: "column",
+              height: 340,
+            }}
+          >
+            <BarChart data={userData} options={chartOptions} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Paper
+            sx={{
+              p: 2,
+              display: "flex",
+              flexDirection: "column",
+              height: 340,
+            }}
+          >
+            <LineChart data={userData} options={chartOptions} />
+          </Paper>
+        </Grid>
+      </Grid>
   );
 }

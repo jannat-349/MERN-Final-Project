@@ -28,6 +28,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { Info, Logout } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -149,14 +150,14 @@ export default function Navbar() {
         <List component="nav">
           <ListItemButton onClick={() => navigate("/")}>
             <ListItemIcon>
-              <DashboardIcon />
+              <Info />
             </ListItemIcon>
             <ListItemText primary="About" />
           </ListItemButton>
           {isAuthenticated() && (
             <ListItemButton onClick={() => navigate("/dashboard")}>
               <ListItemIcon>
-                <ShoppingCartIcon />
+                <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItemButton>
@@ -165,7 +166,7 @@ export default function Navbar() {
           {isAuthenticated() ? (
             <ListItemButton onClick={onLogout}>
               <ListItemIcon>
-                <PeopleIcon />
+                <Logout />
               </ListItemIcon>
               <ListItemText primary="Logout" />
             </ListItemButton>

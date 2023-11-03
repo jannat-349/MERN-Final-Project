@@ -1,4 +1,3 @@
-const path = require("path");
 const Employee = require("../models/Employee");
 
 const createEmployee = async (employeeData) => {
@@ -7,7 +6,7 @@ const createEmployee = async (employeeData) => {
   return employee;
 };
 
-const getAllEmployees = async () => await Employee.find();
+const getAllEmployees = async () => await Employee.find({ isDeleted: false });
 
 const getEmployeeById = async (employeeId) =>
   await Employee.findById(employeeId);
@@ -25,6 +24,7 @@ const deleteEmployee = async (employeeId) => {
     employee.isDeleted = true;
     await employee.save();
   }
+  console.log(employee);
   return employee;
 };
 

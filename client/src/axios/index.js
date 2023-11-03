@@ -1,10 +1,10 @@
-import axios from 'axios';
-import authServices from '../services/authServices';
+import axios from "axios";
+import authServices from "../services/authServices";
 
 const Axios = axios.create({
-  baseURL: 'http://localhost:4000/api',
+  baseURL: "http://localhost:4000/api",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 

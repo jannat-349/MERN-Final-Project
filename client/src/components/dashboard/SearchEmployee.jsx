@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Button } from "@mui/material";
+import { Button, Paper } from "@mui/material";
 import { Search } from "@mui/icons-material";
 
 export function SearchEmployee({ onSearch, searchList }) {
@@ -11,8 +11,15 @@ export function SearchEmployee({ onSearch, searchList }) {
     setSearchTerm(event.target.value);
   };
   return (
-    <>
-      <div style={{ display: "flex", alignItems: "center"}}>
+    <Paper
+      sx={{
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        height: "auto",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center" }}>
         <Autocomplete
           style={{ width: "50vw" }}
           freeSolo
@@ -45,6 +52,6 @@ export function SearchEmployee({ onSearch, searchList }) {
           </Button>
         </div>
       </div>
-    </>
+    </Paper>
   );
 }

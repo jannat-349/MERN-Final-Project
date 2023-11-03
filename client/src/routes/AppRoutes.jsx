@@ -4,6 +4,12 @@ import { HomePage } from "../pages/HomePage";
 import AboutPage from "../pages/AboutPage";
 import Dashboard from "../pages/Dashboard";
 
+import { SecureRoute } from "./SecureRoute";
+import CreateEmployee from "../pages/CreateEmployee";
+import UpdateEmployee from "../pages/UpdateEmployee";
+
+const secureRouteWrapper = (element) => <SecureRoute>{element}</SecureRoute>;
+
 export function AppRoutes() {
   const routes = createBrowserRouter([
     {
@@ -15,8 +21,16 @@ export function AppRoutes() {
           element: <AboutPage />,
         },
         {
-          path: '/dashboard',
-          element: <Dashboard />,
+          path: "/dashboard",
+          element: secureRouteWrapper(<Dashboard />),
+        },
+        {
+          path: "/create",
+          element: secureRouteWrapper(<CreateEmployee />),
+        },
+        {
+          path: "/update/:employeeId",
+          element: secureRouteWrapper(<UpdateEmployee />),
         },
       ],
     },

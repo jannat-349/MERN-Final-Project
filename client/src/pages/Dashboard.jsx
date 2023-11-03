@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Button, Container, Grid, Paper } from "@mui/material";
@@ -8,14 +7,11 @@ import { Chart } from "../components/dashboard/charts/Chart";
 import { TotalEmployees } from "../components/dashboard/TotalEmployees";
 import { EmployeeTable } from "../components/dashboard/EmployeeTable";
 import { SearchEmployee } from "../components/dashboard/SearchEmployee";
-import { fetchDataFromAPI } from "../utils/fetchDataFromAPI";
-import {
-  DELETE_EMPLOYEE_API_URL,
-  GET_All_DEPARTMENTS_API_URL,
-  GET_All_EMPLOYEES_API_URL,
-} from "../assets/api/api";
 import DashboardContext from "../contexts/DashboardContext";
 import Title from "../components/Title";
+import employeeServices from "../services/employeeServices";
+import departmentServices from "../services/departmentServices";
+import { RestartAlt } from "@mui/icons-material";
 
 export default function Dashboard() {
   const [employees, setEmployees] = useState([]);
@@ -30,7 +26,7 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const data = await fetchDataFromAPI(GET_All_EMPLOYEES_API_URL);
+      const data = await employeeServices.getAllEmployees();
       const totalAge = data.reduce((sum, employee) => sum + employee.age, 0);
       const counts = {};
       data.forEach((employee) => {
@@ -40,7 +36,7 @@ export default function Dashboard() {
       setPositionCounts(counts);
       setAgeSum(totalAge);
       setEmployees(data);
-      const data2 = await fetchDataFromAPI(GET_All_DEPARTMENTS_API_URL);
+      const data2 = await departmentServices.getAllDepartments();
       setDepartments(["All", ...data2.map((dept) => dept.name)]);
 
       const uniquePositions = [
@@ -67,12 +63,8 @@ export default function Dashboard() {
 
   const handleDeleteEmployee = async (employeeId) => {
     try {
-      await axios.put(DELETE_EMPLOYEE_API_URL + employeeId, {
-        isDeleted: true,
-      });
-      const updatedEmployees = employees.filter(
-        (employee) => employee._id !== employeeId
-      );
+      const employee = await employeeServices.deleteAnEmployee(employeeId);
+      const updatedEmployees = employees.filter((e) => e._id !== employee._id);
       const totalAge = updatedEmployees.reduce(
         (sum, employee) => sum + employee.age,
         0
@@ -119,10 +111,10 @@ export default function Dashboard() {
     setSelectedPosition(event.target.value);
     filterEmployees();
   };
-  const handleReset = () => {
+  const handleReset = async () => {
     setSelectedDepartment("All");
     setSelectedPosition("All");
-    fetchData();
+    await fetchData();
   };
 
   return isLoading ? (
@@ -130,121 +122,36 @@ export default function Dashboard() {
   ) : (
     <DashboardContext.Provider value={{ employees, setEmployees, ageSum }}>
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        {employees.length > 0 ? (
+        {employees.length > 0 ? <Chart data={positionCounts} /> : <></>}
+        <Grid
+          item
+          xs={12}
+          md={12}
+          style={{ display: "flex", justifyContent: "space-between" }}
+          container
+          spacing={3}
+          marginBottom={3}
+        >
           <Grid
             item
             xs={12}
-            md={12}
-            style={{ display: "flex", justifyContent: "space-between" }}
-            container
-            spacing={3}
-            marginBottom={3}
-          >
-            <Grid item xs={12} lg={6}>
-              <Paper
-                sx={{
-                  p: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  height: 340,
-                }}
-              >
-                <Chart data={positionCounts} type={"bar"} />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <Paper
-                sx={{
-                  p: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  height: 340,
-                }}
-              >
-                <Chart data={positionCounts} type={"line"} />
-              </Paper>
-            </Grid>
-          </Grid>
-        ) : (
-          <></>
-        )}
-        <Grid container spacing={3}>
-          <Grid
-            item
-            xs={12}
-            style={{ display: "flex", justifyContent: "space-between" }}
-            container
+            lg={8}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
             spacing={3}
           >
+            {/* Filtering */}
             <Grid
-              item
-              xs={12}
-              lg={8}
               style={{
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
+                gap: "20px",
+                alignItems: "center",
               }}
+              
             >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "20px",
-                  alignItems: "center",
-                }}
-              >
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "auto",
-                  }}
-                >
-                  <Title>Filter By Department</Title>
-                  <Select
-                    value={selectedDepartment}
-                    onChange={handleDepartmentChange}
-                    sx={{ width: "375px", marginRight: 2 }}
-                  >
-                    {departments.map((department) => (
-                      <MenuItem key={department} value={department}>
-                        {department}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Paper>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "auto",
-                  }}
-                >
-                  <Title>Filter By Position</Title>
-                  <Select
-                    value={selectedPosition}
-                    onChange={handlePositionChange}
-                    sx={{ width: 200 }}
-                  >
-                    {positions.map((position) => (
-                      <MenuItem key={position} value={position}>
-                        {position}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Paper>
-
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleReset}
-                  sx={{ height: 40 }}
-                >
-                  Reset
-                </Button>
-              </div>
               <Paper
                 sx={{
                   p: 2,
@@ -253,38 +160,59 @@ export default function Dashboard() {
                   height: "auto",
                 }}
               >
-                <SearchEmployee
-                  searchList={searchList}
-                  onSearch={handleSearch}
-                />
+                <Title>Filter By Department</Title>
+                <Select
+                  value={selectedDepartment}
+                  onChange={handleDepartmentChange}
+                  sx={{ width: "375px", marginRight: 2 }}
+                >
+                  {departments.map((department) => (
+                    <MenuItem key={department} value={department}>
+                      {department}
+                    </MenuItem>
+                  ))}
+                </Select>
               </Paper>
-            </Grid>
-            <Grid item xs={12} md={4}>
               <Paper
                 sx={{
                   p: 2,
                   display: "flex",
                   flexDirection: "column",
-                  height: 240,
+                  height: "auto",
                 }}
               >
-                <TotalEmployees />
+                <Title>Filter By Position</Title>
+                <Select
+                  value={selectedPosition}
+                  onChange={handlePositionChange}
+                  sx={{ width: 200 }}
+                >
+                  {positions.map((position) => (
+                    <MenuItem key={position} value={position}>
+                      {position}
+                    </MenuItem>
+                  ))}
+                </Select>
               </Paper>
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleReset}
+                sx={{ height: 40 }}
+              >
+                <RestartAlt />
+              </Button>
             </Grid>
+            {/* Searching */}
+
+            <SearchEmployee searchList={searchList} onSearch={handleSearch} />
           </Grid>
-          <Grid item xs={12}>
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-                height: 490,
-              }}
-            >
-              <EmployeeTable onDelete={handleDeleteEmployee} />
-            </Paper>
-          </Grid>
+
+          <TotalEmployees />
         </Grid>
+
+        <EmployeeTable onDelete={handleDeleteEmployee} />
       </Container>
     </DashboardContext.Provider>
   );

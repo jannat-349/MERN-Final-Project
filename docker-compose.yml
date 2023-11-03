@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  ems_client:
+    container_name: ems_client
+    build:
+      context: client
+      dockerfile: Dockerfile
+    depends_on:
+      - ems_server
+    ports:
+      - 3000:3000
+    restart: on-failure
+    volumes:
+      - ./client/src:/code/src
+
+  ems_server:
+    container_name: ems_server
+    build:
+      context: server
+      dockerfile: Dockerfile
+    depends_on:
+      - ems_mongo
+    ports:
+      - 4000:4000
+    restart: on-failure
+    volumes:
+      - ./server/src:/code/src
+    environment:
+      - PORT=4000
+      - MONGODB_URI=mongodb+srv://jucse28349:jucse28349@ems01.2jr4zxh.mongodb.net/?retryWrites=true&w=majority
+      - JWT_SECRET=secret1234
+      - TOKEN_DURATION=6h
+
+  ems_mongo:
+    container_name: ems_mongo
+    image: mongo
+    ports:
+      - 27017:27017

@@ -12,6 +12,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid,
+  Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -19,6 +21,7 @@ import { getImageUrl } from "../../utils/imgUrl";
 import DashboardContext from "../../contexts/DashboardContext";
 
 export function EmployeeTable({ onDelete }) {
+  const navigate = useNavigate();
   const [openDialogs, setOpenDialogs] = useState({});
   const [openDialogs2, setOpenDialogs2] = useState({});
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -144,10 +147,7 @@ export function EmployeeTable({ onDelete }) {
   ];
 
   const handleEdit = (employeeId) => {
-    history.push(`/admin/employee/update/${employeeId}`, {
-      accessToken,
-      refreshToken,
-    });
+    navigate(`/update/${employeeId}`);
   };
 
   const handleDelete = (employeeId) => {
@@ -177,14 +177,26 @@ export function EmployeeTable({ onDelete }) {
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
-      <Title>Recent Employees</Title>
-      <DataGrid
-        rows={employees}
-        columns={columns}
-        pageSize={5}
-        disableRowSelectionOnClick
-        onRowClick={(params) => handleRowClick(params.row._id)}
-      />
+      <Grid item xs={12}>
+        <Paper
+          sx={{
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            height: 490,
+          }}
+        >
+          <Title>Recent Employees</Title>
+          <DataGrid
+            rows={employees}
+            columns={columns}
+            pageSize={5}
+            disableRowSelectionOnClick
+            onRowClick={(params) => handleRowClick(params.row._id)}
+          />
+        </Paper>
+      </Grid>
+
       <Dialog
         open={openDialogs2[selectedEmployee?._id] || false}
         onClose={handleCloseDialog}
@@ -218,33 +230,34 @@ export function EmployeeTable({ onDelete }) {
                 />
               </div>
 
-              <div style={{ flex: 1, textAlign: "left" }}>
-                <p>ID: {selectedEmployee.id}</p>
-                <p>Name: {selectedEmployee.name}</p>
-                <p>Age: {selectedEmployee.age}</p>
-                <p>Position: {selectedEmployee.position}</p>
-                <p>Email: {selectedEmployee.email}</p>
-                <p>Phone: {selectedEmployee.phone}</p>
-                <p>Address: {selectedEmployee.address}</p>
-                <p>
+              <ul style={{ flex: 1, textAlign: "left" }}>
+                <li>ID: {selectedEmployee.id}</li>
+                <li>Name: {selectedEmployee.name}</li>
+                <li>Age: {selectedEmployee.age}</li>
+                <li>Position: {selectedEmployee.position}</li>
+                <li>Email: {selectedEmployee.email}</li>
+                <li>Phone: {selectedEmployee.phone}</li>
+                <li>Address: {selectedEmployee.address}</li>
+                <li>
                   Joining Date:{" "}
                   {selectedEmployee.joiningDate
                     ? new Date(
                         selectedEmployee.joiningDate
                       ).toLocaleDateString()
                     : ""}
-                </p>
+                </li>
 
-                <p>Department: {selectedEmployee.department}</p>
-                <p>
+                <li>Department: {selectedEmployee.department}</li>
+                <li>Salary: {selectedEmployee.salary}</li>
+                <li>
                   Skills:
                   <ol>
                     {selectedEmployee.skills.map((skill, index) => (
                       <li key={index}>{skill}</li>
                     ))}
                   </ol>
-                </p>
-              </div>
+                </li>
+              </ul>
             </div>
           )}
         </DialogContent>
