@@ -17,8 +17,7 @@ employeeRoutes.post(
     const body = req.body;
     if (!req.file) {
       res.status(400).json({ message: `Image is required` });
-    }
-    if (req.file) {
+    } else {
       body.image = path.basename(req.file.path);
     }
     body.name = body.firstName + " " + body.lastName;

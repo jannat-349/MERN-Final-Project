@@ -119,7 +119,6 @@ export default function CreateEmployee() {
           <FormControl style={fieldStyle}>
             <InputLabel>Employee Id</InputLabel>
             <Input
-              required
               name="id"
               type="text"
               style={inputStyle}
@@ -129,7 +128,6 @@ export default function CreateEmployee() {
           <FormControl style={fieldStyle}>
             <InputLabel>First Name</InputLabel>
             <Input
-              required
               name="firstName"
               style={inputStyle}
               onChange={handleChange}
@@ -137,42 +135,36 @@ export default function CreateEmployee() {
           </FormControl>
           <FormControl style={fieldStyle}>
             <InputLabel>Last Name</InputLabel>
-            <Input required name="lastName" style={inputStyle} onChange={handleChange} />
+            <Input name="lastName" style={inputStyle} onChange={handleChange} />
           </FormControl>
           <FormControl style={fieldStyle}>
             <InputLabel>Age</InputLabel>
-            <Input
-              required
-              name="age"
-              style={inputStyle}
-              onChange={handleChange}
-            />
+            <Input name="age" style={inputStyle} onChange={handleChange} />
           </FormControl>
           <FormControl style={fieldStyle}>
             <InputLabel>Position</InputLabel>
-            <Input required name="position" style={inputStyle} onChange={handleChange} />
+            <Input name="position" style={inputStyle} onChange={handleChange} />
           </FormControl>
           <FormControl style={fieldStyle}>
             <InputLabel>Email</InputLabel>
-            <Input required name="email" style={inputStyle} onChange={handleChange} />
+            <Input name="email" style={inputStyle} onChange={handleChange} />
           </FormControl>
           <FormControl style={fieldStyle}>
             <InputLabel>Phone</InputLabel>
-            <Input required name="phone" style={inputStyle} onChange={handleChange} />
+            <Input name="phone" style={inputStyle} onChange={handleChange} />
           </FormControl>
           <FormControl style={fieldStyle}>
             <InputLabel>Address</InputLabel>
-            <Input required name="address" style={inputStyle} onChange={handleChange} />
+            <Input name="address" style={inputStyle} onChange={handleChange} />
           </FormControl>
 
           <InputLabel>Image</InputLabel>
           <FormControl style={fieldStyle}>
-            <Input required type="file" name="image" onChange={handleChange} />
+            <Input type="file" name="image" onChange={handleChange} />
           </FormControl>
           <InputLabel>Joining Date</InputLabel>
           <FormControl style={fieldStyle}>
             <Input
-            required
               type="Date"
               style={inputStyle}
               name="joiningDate"
@@ -188,7 +180,6 @@ export default function CreateEmployee() {
               <div>
                 <Title>Department</Title>
                 <Select
-                required
                   style={inputStyle}
                   name="department"
                   onChange={handleChange}
