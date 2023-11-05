@@ -24,21 +24,17 @@ export default function Dashboard() {
   const [departments, setDepartments] = useState([]);
   const [positions, setPositions] = useState([]);
 
-  const updateAverageAge = (employees) => {
-    const totalAge = employees.reduce((sum, employee) => sum + employee.age, 0);
-    setAgeSum(totalAge);
-  };
-
   const fetchData = async () => {
     try {
       const data = await employeeServices.getAllEmployees();
+      const totalAge = data.reduce((sum, employee) => sum + employee.age, 0);
       const counts = {};
       data.forEach((employee) => {
         const position = employee.position;
         counts[position] = (counts[position] || 0) + 1;
       });
       setPositionCounts(counts);
-      updateAverageAge(data);
+      setAgeSum(totalAge);
       setEmployees(data);
       const data2 = await departmentServices.getAllDepartments();
       setDepartments(["All", ...data2.map((dept) => dept.name)]);
@@ -63,15 +59,22 @@ export default function Dashboard() {
       employee.name.toLowerCase().includes(option.toLowerCase())
     );
     setEmployees(filteredEmployees);
-    updateAverageAge(filterEmployees);
+    const totalAge = filteredEmployees.reduce(
+      (sum, employee) => sum + employee.age,
+      0
+    );
+    setAgeSum(totalAge);
   };
 
   const handleDeleteEmployee = async (employeeId) => {
     try {
       const employee = await employeeServices.deleteAnEmployee(employeeId);
       const updatedEmployees = employees.filter((e) => e._id !== employee._id);
-      updateAverageAge(filterEmployees);
-
+      const totalAge = updatedEmployees.reduce(
+        (sum, employee) => sum + employee.age,
+        0
+      );
+      setAgeSum(totalAge);
       setEmployees(updatedEmployees);
       setSearchList(updatedEmployees);
     } catch (error) {
@@ -94,7 +97,11 @@ export default function Dashboard() {
       );
     }
     setEmployees(filteredEmployees);
-    updateAverageAge(filterEmployees);
+    const totalAge = filteredEmployees.reduce(
+      (sum, employee) => sum + employee.age,
+      0
+    );
+    setAgeSum(totalAge);
   };
   useEffect(() => {
     filterEmployees();
