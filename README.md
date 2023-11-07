@@ -8,10 +8,15 @@ Also in the dashboard the user will see barchart, linechart, filtering options, 
 ![image](https://github.com/jannat-349/MERN-Final-Project/assets/50805240/b6bda1f0-04a5-46d9-87a9-5ef8957c8cbc)
 
 # Installation
-In the server directory run: npm run dev
-then in the client directory run: npm run start
+In the server directory run: 
+"npm install"
+"npm run dev"
 
-This will automatically run the system on localhost:3000/
+In the client directory run: 
+"npm install"
+"npm run start"
+
+This will automatically run the system on "localhost:3000/"
 
 # Docker Installation
 In the root directory run: docker compose up ems_client
