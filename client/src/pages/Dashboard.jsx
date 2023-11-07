@@ -24,17 +24,21 @@ export default function Dashboard() {
   const [departments, setDepartments] = useState([]);
   const [positions, setPositions] = useState([]);
 
+
   const fetchData = async () => {
     try {
       const data = await employeeServices.getAllEmployees();
-      const totalAge = data.reduce((sum, employee) => sum + employee.age, 0);
+      const totalAge = data.reduce(
+      (sum, employee) => sum + employee.age,
+      0
+    );
+    setAgeSum(totalAge);
       const counts = {};
       data.forEach((employee) => {
         const position = employee.position;
         counts[position] = (counts[position] || 0) + 1;
       });
       setPositionCounts(counts);
-      setAgeSum(totalAge);
       setEmployees(data);
       const data2 = await departmentServices.getAllDepartments();
       setDepartments(["All", ...data2.map((dept) => dept.name)]);
@@ -64,6 +68,7 @@ export default function Dashboard() {
       0
     );
     setAgeSum(totalAge);
+
   };
 
   const handleDeleteEmployee = async (employeeId) => {
@@ -71,10 +76,11 @@ export default function Dashboard() {
       const employee = await employeeServices.deleteAnEmployee(employeeId);
       const updatedEmployees = employees.filter((e) => e._id !== employee._id);
       const totalAge = updatedEmployees.reduce(
-        (sum, employee) => sum + employee.age,
-        0
-      );
-      setAgeSum(totalAge);
+      (sum, employee) => sum + employee.age,
+      0
+    );
+    setAgeSum(totalAge);
+
       setEmployees(updatedEmployees);
       setSearchList(updatedEmployees);
     } catch (error) {
