@@ -7,6 +7,9 @@ Also in the dashboard the user will see barchart, linechart, filtering options, 
 ![image](https://github.com/jannat-349/MERN-Final-Project/assets/50805240/ab3ac04d-670e-40cd-a53a-b1b89f4b9a1e)
 ![image](https://github.com/jannat-349/MERN-Final-Project/assets/50805240/b6bda1f0-04a5-46d9-87a9-5ef8957c8cbc)
 
+# Project Illustration Video Link:
+https://drive.google.com/drive/folders/1-nqCvrjqYnaYaAu0tWVUw-j9HEKg9Pj_?usp=drive_link
+
 # Installation
 In the server directory run: 
 "npm install"
