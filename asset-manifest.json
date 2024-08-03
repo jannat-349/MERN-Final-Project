@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/jannat-349.github.io/MERN-Final-Project/static/css/main.e6c13ad2.css",
+    "main.js": "/jannat-349.github.io/MERN-Final-Project/static/js/main.bc05b6bf.js",
+    "static/js/787.d5fa4d18.chunk.js": "/jannat-349.github.io/MERN-Final-Project/static/js/787.d5fa4d18.chunk.js",
+    "index.html": "/jannat-349.github.io/MERN-Final-Project/index.html",
+    "main.e6c13ad2.css.map": "/jannat-349.github.io/MERN-Final-Project/static/css/main.e6c13ad2.css.map",
+    "main.bc05b6bf.js.map": "/jannat-349.github.io/MERN-Final-Project/static/js/main.bc05b6bf.js.map",
+    "787.d5fa4d18.chunk.js.map": "/jannat-349.github.io/MERN-Final-Project/static/js/787.d5fa4d18.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.bc05b6bf.js"
+  ]
+}
